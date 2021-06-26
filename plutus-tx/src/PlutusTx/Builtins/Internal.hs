@@ -249,3 +249,64 @@ head (BuiltinList [])    = Prelude.error "empty list"
 tail :: BuiltinList a -> BuiltinList a
 tail (BuiltinList (_:xs)) = coerce xs
 tail (BuiltinList [])     = Prelude.error "empty list"
+
+newtype BuiltinData = BuiltinData { unsafeGetData :: TrueData.Data }
+    deriving newtype (Haskell.Show, Haskell.Eq, Haskell.Ord)
+
+{-# NOINLINE chooseData #-}
+chooseData :: forall a . a -> a -> a -> a -> a -> Data -> a
+chooseData constrCase mapCase listCase iCase bCase (BuiltinData d) = case d of
+    TrueData.Constr{} -> constrCase
+    TrueData.Map{}    -> mapCase
+    TrueData.List{}   -> listCase
+    TrueData.I{}      -> iCase
+    TrueData.B{}      -> bCase
+
+{-# NOINLINE mkConstr #-}
+mkConstr :: Haskell.Integer -> [Data] -> Data
+mkConstr i args = BuiltinData (TrueData.Constr i (coerce args))
+
+{-# NOINLINE mkMap #-}
+mkMap :: [(Data, Data)] -> Data
+mkMap es = BuiltinData (TrueData.Map (coerce es))
+
+{-# NOINLINE mkList #-}
+mkList :: [Data] -> Data
+mkList l = BuiltinData (TrueData.List (coerce l))
+
+{-# NOINLINE mkI #-}
+mkI :: Haskell.Integer -> Data
+mkI i = BuiltinData (TrueData.I i)
+
+{-# NOINLINE mkB #-}
+mkB :: BS.ByteString -> Data
+mkB b = BuiltinData (TrueData.B b)
+
+{-# NOINLINE unsafeDataAsConstr #-}
+unsafeDataAsConstr :: BuiltinData -> BuiltinPair Haskell.Integer (BuiltinList BuiltinData)
+unsafeDataAsConstr (BuiltinData (TrueData.Constr i args)) = BuiltinPair (i, coerce args)
+unsafeDataAsConstr _                                      = error unitval
+
+{-# NOINLINE unsafeDataAsMap #-}
+unsafeDataAsMap :: Data -> [(Data, Data)]
+unsafeDataAsMap (BuiltinData (TrueData.Map m)) = coerce m
+unsafeDataAsMap _                              = error unitval
+
+{-# NOINLINE unsafeDataAsList #-}
+unsafeDataAsList :: Data -> [Data]
+unsafeDataAsList (BuiltinData (TrueData.List l)) = coerce l
+unsafeDataAsList _                               = error unitval
+
+{-# NOINLINE unsafeDataAsI #-}
+unsafeDataAsI :: Data -> Haskell.Integer
+unsafeDataAsI (BuiltinData (TrueData.I i)) = i
+unsafeDataAsI _                            = error unitval
+
+{-# NOINLINE unsafeDataAsB #-}
+unsafeDataAsB :: Data -> BS.ByteString
+unsafeDataAsB (BuiltinData (TrueData.B b)) = b
+unsafeDataAsB _                            = error unitval
+
+{-# NOINLINE equalsData #-}
+equalsData :: Data -> Data -> Bool
+equalsData (BuiltinData b1) (BuiltinData b2) = b1 Prelude.== b2

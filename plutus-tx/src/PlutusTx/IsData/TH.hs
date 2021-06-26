@@ -8,6 +8,7 @@ import qualified Language.Haskell.TH          as TH
 import qualified Language.Haskell.TH.Datatype as TH
 
 import           PlutusCore.Data
+import           PlutusTx.Data
 
 import qualified PlutusTx.Applicative         as PlutusTx
 import qualified PlutusTx.Eq                  as PlutusTx
@@ -19,21 +20,36 @@ toDataClause (TH.ConstructorInfo{TH.constructorName=name, TH.constructorFields=a
     argNames <- for argTys $ \_ -> TH.newName "arg"
     let pat = TH.conP name (fmap TH.varP argNames)
     let argsToData = fmap (\v -> [| toData $(TH.varE v) |]) argNames
-    let app = [| Constr index $(TH.listE argsToData) |]
-    TH.clause [pat] (TH.normalB app) []
+    --let app = [| Constr index $(TH.listE argsToData) |]
+    let fakeBody = [| error "no" |]
+    TH.clause [pat] (TH.normalB fakeBody) []
 
 toDataClauses :: [(TH.ConstructorInfo, Int)] -> [TH.Q TH.Clause]
 toDataClauses indexedCons = toDataClause <$> indexedCons
 
 fromDataClause :: (TH.ConstructorInfo, Int) -> TH.Q TH.Clause
 fromDataClause (TH.ConstructorInfo{TH.constructorName=name, TH.constructorFields=argTys}, index) = do
+    dName <- TH.newName "d"
     argNames <- for argTys $ \_ -> TH.newName "arg"
+    let lpat = TH.listP (fmap TH.varP argNames)
+    let argsFromData = fmap (\v -> [| fromData $(TH.varE v) |]) argNames
+    let app = foldl' (\h e -> [| $h PlutusTx.<*> $e |]) [| PlutusTx.pure $(TH.conE name) |] argsFromData
+    {-
     indexName <- TH.newName "i"
     let pat = TH.conP 'Constr [TH.varP indexName , TH.listP (fmap TH.varP argNames)]
     let argsFromData = fmap (\v -> [| fromData $(TH.varE v) |]) argNames
     let app = foldl' (\h e -> [| $h PlutusTx.<*> $e |]) [| PlutusTx.pure $(TH.conE name) |] argsFromData
     let guard = [| $(TH.varE indexName) PlutusTx.== index |]
     TH.clause [pat] (TH.guardedB [TH.normalGE guard app]) []
+    -}
+
+    let body =
+            [|
+                let reconstruct i $(lpat) | i PlutusTx.== index = $(app)
+                    reconstruct _ _ = error "wrong constructor"
+                in matchData $(TH.varE dName) reconstruct (const Nothing) (const Nothing) (const Nothing) (const Nothing)
+             |]
+    TH.clause [TH.varP dName] (TH.normalB body) []
 
 fromDataClauses :: [(TH.ConstructorInfo, Int)] -> [TH.Q TH.Clause]
 fromDataClauses indexedCons =

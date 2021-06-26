@@ -9,5 +9,6 @@ import qualified GhcPlugins                               as GHC
 
 compileTypeNorm :: Compiling uni fun m => GHC.Type -> m (PIRType uni)
 compileType :: Compiling uni fun m => GHC.Type -> m (PIRType uni)
+compileTyCon :: Compiling uni fun m => GHC.TyCon -> m (PIRType uni)
 
 getMatchInstantiated :: Compiling uni fun m => GHC.Type -> m (PIRTerm uni fun)

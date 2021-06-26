@@ -11,6 +11,11 @@
     )
     (termbind
       (strict)
+      (vardecl builtinBoolToBool (fun (con bool) Bool))
+      (lam b (con bool) [ [ [ { (builtin ifThenElse) Bool } b ] True ] False ])
+    )
+    (termbind
+      (strict)
       (vardecl
         verifySignature
         (fun (con bytestring) (fun (con bytestring) (fun (con bytestring) Bool)))
@@ -24,6 +29,7 @@
           (lam
             signature
             (con bytestring)
+<<<<<<< HEAD
             [
               [
                 [
@@ -34,6 +40,22 @@
               ]
               False
             ]
+||||||| parent of ac6d6c898 (WIP)
+            (let
+              (nonrec)
+              (termbind
+                (strict)
+                (vardecl b (con bool))
+                [ [ [ (builtin verifySignature) arg ] arg ] arg ]
+              )
+              [ [ [ { (builtin ifThenElse) Bool } b ] True ] False ]
+            )
+=======
+            [
+              builtinBoolToBool
+              [ [ [ (builtin verifySignature) arg ] arg ] arg ]
+            ]
+>>>>>>> ac6d6c898 (WIP)
           )
         )
       )

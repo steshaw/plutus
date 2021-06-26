@@ -12,7 +12,8 @@ import           Data.ByteString      as BS
 
 import           Prelude              (Int, Integer, Maybe (..), error)
 
-import           PlutusCore.Data
+import qualified PlutusCore.Data      as TrueData
+import           PlutusTx.Data
 
 import           PlutusTx.Functor
 import           PlutusTx.Traversable
@@ -33,7 +34,7 @@ class IsData (a :: Type) where
 
 instance IsData Data where
     {-# INLINABLE toData #-}
-    toData d = d
+    toData _ = error "no"
     {-# INLINABLE fromData #-}
     fromData d = Just d
 
@@ -44,24 +45,21 @@ instance (TypeError ('Text "Int is not supported, use Integer instead"))
 
 instance IsData Integer where
     {-# INLINABLE toData #-}
-    toData = I
+    toData _ = error "no" -- I i
     {-# INLINABLE fromData #-}
-    fromData (I i) = Just i
-    fromData _     = Nothing
+    fromData d = matchData d (\_ _ -> Nothing) (const Nothing) (const Nothing) (\i -> Just i) (const Nothing)
 
 instance IsData ByteString where
     {-# INLINABLE toData #-}
-    toData b = B b
+    toData b = error "no" -- B b
     {-# INLINABLE fromData #-}
-    fromData (B b) = Just b
-    fromData _     = Nothing
+    fromData d = matchData d (\_ _ -> Nothing) (const Nothing) (const Nothing) (const Nothing) (\b -> Just b)
 
 instance IsData a => IsData [a] where
     {-# INLINABLE toData #-}
-    toData xs = List (fmap toData xs)
+    toData xs = error "no" -- List (fmap toData xs)
     {-# INLINABLE fromData #-}
-    fromData (List ds) = traverse fromData ds
-    fromData _         = Nothing
+    fromData d = matchData d (\_ _ -> Nothing) (const Nothing) (\l -> traverse fromData l) (const Nothing) (const Nothing)
 
 instance IsData Void where
     {-# INLINABLE toData #-}

@@ -14,7 +14,7 @@ module PlutusTx.Lift.Instances () where
 
 import qualified PlutusCore          as PLC
 
-import           PlutusTx.Builtins
+import           PlutusTx.Data
 import           PlutusTx.Lift.Class
 
 import           PlutusIR
@@ -94,7 +94,7 @@ instance uni `PLC.Includes` Char => Lift uni Char where
 -- Standard types
 -- These need to be in a separate file for TH staging reasons
 
-makeLift ''Data
+--makeLift ''Data
 makeLift ''Bool
 makeLift ''Maybe
 makeLift ''Either

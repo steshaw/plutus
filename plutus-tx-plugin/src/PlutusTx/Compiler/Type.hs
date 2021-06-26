@@ -9,6 +9,7 @@
 module PlutusTx.Compiler.Type (
     compileTypeNorm,
     compileType,
+    compileTyCon,
     compileKind,
     getDataCons,
     getConstructors,

@@ -11,6 +11,11 @@
     )
     (termbind
       (strict)
+      (vardecl builtinBoolToBool (fun (con bool) Bool))
+      (lam b (con bool) [ [ [ { (builtin ifThenElse) Bool } b ] True ] False ])
+    )
+    (termbind
+      (strict)
       (vardecl lessThanInteger (fun (con integer) (fun (con integer) Bool)))
       (lam
         x
@@ -18,6 +23,7 @@
         (lam
           y
           (con integer)
+<<<<<<< HEAD
           [
             [
               [
@@ -28,6 +34,19 @@
             ]
             False
           ]
+||||||| parent of ac6d6c898 (WIP)
+          (let
+            (nonrec)
+            (termbind
+              (strict)
+              (vardecl b (con bool))
+              [ [ (builtin lessThanInteger) arg ] arg ]
+            )
+            [ [ [ { (builtin ifThenElse) Bool } b ] True ] False ]
+          )
+=======
+          [ builtinBoolToBool [ [ (builtin lessThanInteger) arg ] arg ] ]
+>>>>>>> ac6d6c898 (WIP)
         )
       )
     )
