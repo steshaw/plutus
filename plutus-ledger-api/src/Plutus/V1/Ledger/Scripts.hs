@@ -373,11 +373,11 @@ runMintingPolicyScript context mps red = do
 
 -- | @()@ as a datum.
 unitDatum :: Datum
-unitDatum = Datum $ toData ()
+unitDatum = Datum $ toBuiltinData ()
 
 -- | @()@ as a redeemer.
 unitRedeemer :: Redeemer
-unitRedeemer = Redeemer $ toData ()
+unitRedeemer = Redeemer $ toBuiltinData ()
 
 makeLift ''ValidatorHash
 

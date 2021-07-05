@@ -18,7 +18,7 @@ toDataClause :: (TH.ConstructorInfo, Int) -> TH.Q TH.Clause
 toDataClause (TH.ConstructorInfo{TH.constructorName=name, TH.constructorFields=argTys}, index) = do
     argNames <- for argTys $ \_ -> TH.newName "arg"
     let pat = TH.conP name (fmap TH.varP argNames)
-    let argsToData = fmap (\v -> [| toData $(TH.varE v) |]) argNames
+    let argsToData = fmap (\v -> [| toBuiltinData $(TH.varE v) |]) argNames
     let app = [| mkConstr index $(TH.listE argsToData) |]
     TH.clause [pat] (TH.normalB app) []
 
@@ -30,7 +30,7 @@ fromDataClause (TH.ConstructorInfo{TH.constructorName=name, TH.constructorFields
     dName <- TH.newName "d"
     argNames <- for argTys $ \_ -> TH.newName "arg"
     let lpat = TH.listP (fmap TH.varP argNames)
-    let argsFromData = fmap (\v -> [| fromData $(TH.varE v) |]) argNames
+    let argsFromData = fmap (\v -> [| fromBuiltinData $(TH.varE v) |]) argNames
     let app = foldl' (\h e -> [| $h PlutusTx.<*> $e |]) [| PlutusTx.pure $(TH.conE name) |] argsFromData
 
     let body =
@@ -70,11 +70,11 @@ makeIsDataIndexed name indices = do
             Just i  -> pure (c, i)
             Nothing -> fail $ "No index given for constructor" ++ show (TH.constructorName c)
 
-    toDataDecl <- TH.funD 'toData (toDataClauses indexedCons)
-    toDataPrag <- TH.pragInlD 'toData TH.Inlinable TH.FunLike TH.AllPhases
+    toDataDecl <- TH.funD 'toBuiltinData (toDataClauses indexedCons)
+    toDataPrag <- TH.pragInlD 'toBuiltinData TH.Inlinable TH.FunLike TH.AllPhases
 
-    fromDataDecl <- TH.funD 'fromData (fromDataClauses indexedCons)
-    fromDataPrag <- TH.pragInlD 'fromData TH.Inlinable TH.FunLike TH.AllPhases
+    fromDataDecl <- TH.funD 'fromBuiltinData (fromDataClauses indexedCons)
+    fromDataPrag <- TH.pragInlD 'fromBuiltinData TH.Inlinable TH.FunLike TH.AllPhases
 
     pure [TH.InstanceD Nothing constraints (TH.classPred ''IsData [appliedType]) [toDataPrag, toDataDecl, fromDataPrag, fromDataDecl]]
     where

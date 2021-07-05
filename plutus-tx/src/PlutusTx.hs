@@ -21,7 +21,7 @@ module PlutusTx (
 import           PlutusCore.Data     (Data (..))
 import           PlutusTx.Builtins   (BuiltinData)
 import           PlutusTx.Code       (CompiledCode, CompiledCodeIn, applyCode, getPir, getPlc)
-import           PlutusTx.IsData     (IsData (..), makeIsDataIndexed, unstableMakeIsData)
+import           PlutusTx.IsData     (IsData (..), fromData, makeIsDataIndexed, toData, unstableMakeIsData)
 import           PlutusTx.Lift       (liftCode, makeLift, safeLiftCode)
 import           PlutusTx.Lift.Class (Lift, Typeable)
 import           PlutusTx.TH         as Export
