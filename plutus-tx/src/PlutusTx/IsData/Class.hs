@@ -8,12 +8,13 @@
 {-# OPTIONS_GHC -fno-specialise #-}
 module PlutusTx.IsData.Class where
 
-import           Data.ByteString      as BS
+import           Data.ByteString            as BS
 
-import           Prelude              (Int, Integer, Maybe (..), error)
+import           Prelude                    (Int, Integer, Maybe (..), error)
 
-import qualified PlutusCore.Data      as TrueData
+import qualified PlutusCore.Data            as PLC
 import           PlutusTx.Builtins
+import           PlutusTx.Builtins.Internal (BuiltinData (..))
 
 import           PlutusTx.Functor
 import           PlutusTx.Traversable
@@ -21,48 +22,55 @@ import           PlutusTx.Traversable
 import           Data.Kind
 import           Data.Void
 
-import           GHC.TypeLits         (ErrorMessage (..), TypeError)
+import           GHC.TypeLits               (ErrorMessage (..), TypeError)
 
 
 {-# ANN module "HLint: ignore" #-}
 
 -- | A typeclass for types that can be converted to and from 'Data'.
 class IsData (a :: Type) where
-    toData :: a -> BuiltinData
+    toBuiltinData :: a -> BuiltinData
     -- TODO: this should probably provide some kind of diagnostics
-    fromData :: BuiltinData -> Maybe a
+    fromBuiltinData :: BuiltinData -> Maybe a
 
 instance IsData BuiltinData where
-    {-# INLINABLE toData #-}
-    toData = id
-    {-# INLINABLE fromData #-}
-    fromData d = Just d
+    {-# INLINABLE toBuiltinData #-}
+    toBuiltinData = id
+    {-# INLINABLE fromBuiltinData #-}
+    fromBuiltinData d = Just d
 
 instance (TypeError ('Text "Int is not supported, use Integer instead"))
     => IsData Int where
-    toData = Prelude.error "unsupported"
-    fromData = Prelude.error "unsupported"
+    toBuiltinData = Prelude.error "unsupported"
+    fromBuiltinData = Prelude.error "unsupported"
 
 instance IsData Integer where
-    {-# INLINABLE toData #-}
-    toData _ = Prelude.error "no" -- I i
-    {-# INLINABLE fromData #-}
-    fromData d = matchData d (\_ _ -> Nothing) (const Nothing) (const Nothing) (\i -> Just i) (const Nothing)
+    {-# INLINABLE toBuiltinData #-}
+    toBuiltinData i = mkI i
+    {-# INLINABLE fromBuiltinData #-}
+    fromBuiltinData d = matchData d (\_ _ -> Nothing) (const Nothing) (const Nothing) (\i -> Just i) (const Nothing)
 
 instance IsData ByteString where
-    {-# INLINABLE toData #-}
-    toData b = Prelude.error "no" -- B b
-    {-# INLINABLE fromData #-}
-    fromData d = matchData d (\_ _ -> Nothing) (const Nothing) (const Nothing) (const Nothing) (\b -> Just b)
+    {-# INLINABLE toBuiltinData #-}
+    toBuiltinData b = mkB b
+    {-# INLINABLE fromBuiltinData #-}
+    fromBuiltinData d = matchData d (\_ _ -> Nothing) (const Nothing) (const Nothing) (const Nothing) (\b -> Just b)
 
 instance IsData a => IsData [a] where
-    {-# INLINABLE toData #-}
-    toData xs = Prelude.error "no" -- List (fmap toData xs)
-    {-# INLINABLE fromData #-}
-    fromData d = matchData d (\_ _ -> Nothing) (const Nothing) (\l -> traverse fromData l) (const Nothing) (const Nothing)
+    {-# INLINABLE toBuiltinData #-}
+    toBuiltinData xs = mkList (fmap toBuiltinData xs)
+    {-# INLINABLE fromBuiltinData #-}
+    fromBuiltinData d = matchData d (\_ _ -> Nothing) (const Nothing) (\l -> traverse fromBuiltinData l) (const Nothing) (const Nothing)
 
 instance IsData Void where
-    {-# INLINABLE toData #-}
-    toData v = absurd v
-    {-# INLINABLE fromData #-}
-    fromData _ = Nothing
+    {-# INLINABLE toBuiltinData #-}
+    toBuiltinData v = absurd v
+    {-# INLINABLE fromBuiltinData #-}
+    fromBuiltinData _ = Nothing
+
+toData :: (IsData a) => a -> PLC.Data
+toData a = case toBuiltinData a of
+    (BuiltinData d) -> d
+
+fromData :: (IsData a) => PLC.Data -> Maybe a
+fromData d = fromBuiltinData (BuiltinData d)
