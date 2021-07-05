@@ -21,6 +21,5 @@ import           PlutusTx.Code       (CompiledCode, CompiledCodeIn, applyCode, g
 import           PlutusTx.IsData     (IsData (..), makeIsDataIndexed, unstableMakeIsData)
 import           PlutusTx.Lift       (liftCode, makeLift, safeLiftCode)
 import           PlutusTx.Lift.Class (Lift, Typeable)
+import           PlutusTx.Prelude    (Data)
 import           PlutusTx.TH         as Export
-
-type Data = BuiltinData

@@ -73,8 +73,10 @@ import           GHC.Generics                     (Generic)
 import           Plutus.V1.Ledger.Bytes           (LedgerBytes (..))
 import           Plutus.V1.Ledger.Orphans         ()
 import qualified PlutusCore                       as PLC
+import qualified PlutusCore.Data                  as PLC
 import           PlutusTx                         (CompiledCode, IsData (..), getPlc, makeLift)
 import           PlutusTx.Builtins                as Builtins
+import           PlutusTx.Builtins.Internal       as BI
 import           PlutusTx.Evaluation              (ErrorWithCause (..), EvaluationError (..), evaluateCekTrace)
 import           PlutusTx.Lift                    (liftCode)
 import           PlutusTx.Prelude
@@ -195,10 +197,10 @@ instance ToJSON Script where
 instance FromJSON Script where
     parseJSON = JSON.decodeSerialise
 
-instance ToJSON Data where
+instance ToJSON PLC.Data where
     toJSON = JSON.String . JSON.encodeSerialise
 
-instance FromJSON Data where
+instance FromJSON PLC.Data where
     parseJSON = JSON.decodeSerialise
 
 mkValidatorScript :: CompiledCode (Data -> Data -> Data -> ()) -> Validator
@@ -232,9 +234,9 @@ instance BA.ByteArrayAccess Validator where
 -- | 'Datum' is a wrapper around 'Data' values which are used as data in transaction outputs.
 newtype Datum = Datum { getDatum :: Data  }
   deriving stock (Generic, Haskell.Show)
-  deriving newtype (Haskell.Eq, Haskell.Ord, Eq, Ord, Serialise, IsData, NFData)
-  deriving anyclass (ToJSON, FromJSON)
-  deriving Pretty via Data
+  deriving newtype (Haskell.Eq, Haskell.Ord, Eq, IsData)
+  deriving (ToJSON, FromJSON, Serialise, NFData) via PLC.Data
+  deriving Pretty via PLC.Data
 
 instance BA.ByteArrayAccess Datum where
     length =
@@ -245,11 +247,8 @@ instance BA.ByteArrayAccess Datum where
 -- | 'Redeemer' is a wrapper around 'Data' values that are used as redeemers in transaction inputs.
 newtype Redeemer = Redeemer { getRedeemer :: Data }
   deriving stock (Generic, Haskell.Show)
-  deriving newtype (Haskell.Eq, Haskell.Ord, Eq, Ord, Serialise, NFData)
-  deriving anyclass (ToJSON, FromJSON)
-
-instance Pretty Redeemer where
-    pretty (Redeemer dat) = "Redeemer:" <+> pretty dat
+  deriving newtype (Haskell.Eq, Haskell.Ord, Eq)
+  deriving (ToJSON, FromJSON, Serialise, NFData, Pretty) via PLC.Data
 
 instance BA.ByteArrayAccess Redeemer where
     length =
@@ -326,8 +325,7 @@ mintingPolicyHash vl = MintingPolicyHash $ BA.convert h' where
 -- | Information about the state of the blockchain and about the transaction
 --   that is currently being validated, represented as a value in 'Data'.
 newtype Context = Context Data
-    deriving stock (Generic, Haskell.Show)
-    deriving anyclass (ToJSON, FromJSON)
+    deriving (ToJSON, FromJSON) via PLC.Data
 
 -- | Apply a 'Validator' to its 'Context', 'Datum', and 'Redeemer'.
 applyValidator
