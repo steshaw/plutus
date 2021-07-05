@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances        #-}
 {-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE TypeFamilies             #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
@@ -149,11 +150,23 @@ type instance BuiltinRep (a,b) = BuiltinPair (BuiltinRep a) (BuiltinRep b)
 instance (FromBuiltin a, FromBuiltin b) => FromBuiltin (a,b) where
     {-# INLINABLE fromBuiltin #-}
     fromBuiltin p = (fromBuiltin $ fst p, fromBuiltin $ snd p)
+instance ToBuiltin (BuiltinData, BuiltinData) where
+    {-# INLINABLE toBuiltin #-}
+    toBuiltin (d1, d2) = mkPairData d1 d2
 
 type instance BuiltinRep [a] = BuiltinList (BuiltinRep a)
 instance FromBuiltin a => FromBuiltin [a] where
     {-# INLINABLE fromBuiltin #-}
     fromBuiltin l = ifThenElse (null l) [] (fromBuiltin (head l):fromBuiltin (tail l))
+instance ToBuiltin [BuiltinData] where
+    {-# INLINABLE toBuiltin #-}
+    toBuiltin []     = mkNilData
+    toBuiltin (d:ds) = mkConsData d (toBuiltin ds)
+
+instance ToBuiltin [(BuiltinData, BuiltinData)] where
+    {-# INLINABLE toBuiltin #-}
+    toBuiltin []     = mkNilPairData
+    toBuiltin (d:ds) = mkConsPairData (toBuiltin d) (toBuiltin ds)
 
 type instance BuiltinRep BuiltinData = BuiltinData
 instance FromBuiltin BuiltinData where
