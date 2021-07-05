@@ -6,6 +6,7 @@ module PlutusTx (
     getPir,
     applyCode,
     BuiltinData,
+    Data,
     IsData (..),
     unstableMakeIsData,
     makeIsDataIndexed,
@@ -21,3 +22,5 @@ import           PlutusTx.IsData     (IsData (..), makeIsDataIndexed, unstableMa
 import           PlutusTx.Lift       (liftCode, makeLift, safeLiftCode)
 import           PlutusTx.Lift.Class (Lift, Typeable)
 import           PlutusTx.TH         as Export
+
+type Data = BuiltinData
