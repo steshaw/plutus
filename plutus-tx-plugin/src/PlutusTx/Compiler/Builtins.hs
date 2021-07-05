@@ -19,7 +19,6 @@ module PlutusTx.Compiler.Builtins (
     , errorTy
     , errorFunc) where
 
-<<<<<<< HEAD
 import qualified PlutusTx.Builtins.Class       as Builtins
 import qualified PlutusTx.Builtins.Internal    as Builtins
 
@@ -37,6 +36,7 @@ import qualified PlutusIR.Purity               as PIR
 
 import qualified PlutusCore                    as PLC
 import qualified PlutusCore.Constant           as PLC
+import qualified PlutusCore.Data               as PLC
 import           PlutusCore.Quote
 
 import qualified GhcPlugins                    as GHC
@@ -48,82 +48,6 @@ import           Control.Monad.Reader
 import qualified Data.ByteString               as BS
 import qualified Data.Map                      as Map
 import           Data.Proxy
-||||||| parent of ac6d6c898 (WIP)
-import                qualified PlutusTx.Builtins             as Builtins
-import                qualified PlutusTx.String               as String
-
-import                          PlutusTx.Compiler.Error
-import {-# SOURCE #-}           PlutusTx.Compiler.Expr
-import                          PlutusTx.Compiler.Laziness
-import                          PlutusTx.Compiler.Names
-import {-# SOURCE #-}           PlutusTx.Compiler.Type
-import                          PlutusTx.Compiler.Types
-import                          PlutusTx.Compiler.Utils
-import                          PlutusTx.PIRTypes
-
-import                qualified PlutusIR                      as PIR
-import                qualified PlutusIR.Compiler.Definitions as PIR
-import                          PlutusIR.Compiler.Names
-import                qualified PlutusIR.MkPir                as PIR
-import                qualified PlutusIR.Purity               as PIR
-
-import                qualified PlutusCore                    as PLC
-import                qualified PlutusCore.Constant           as PLC
-import                          PlutusCore.Quote
-import                qualified PlutusCore.StdLib.Data.Bool   as Bool
-import                qualified PlutusCore.StdLib.Data.Unit   as Unit
-
-import                qualified GhcPlugins                    as GHC
-
-import                qualified Language.Haskell.TH.Syntax    as TH
-
-import                          Control.Monad
-import                          Control.Monad.Reader
-
-import                qualified Data.ByteString               as BS
-import                qualified Data.Map                      as Map
-import                          Data.Proxy
-import                qualified Data.Set                      as Set
-=======
-import                qualified PlutusTx.Builtins             as Builtins
-import                qualified PlutusTx.String               as String
-
-import                          PlutusTx.Compiler.Error
-import {-# SOURCE #-}           PlutusTx.Compiler.Expr
-import                          PlutusTx.Compiler.Laziness
-import                          PlutusTx.Compiler.Names
-import {-# SOURCE #-}           PlutusTx.Compiler.Type
-import                          PlutusTx.Compiler.Types
-import                          PlutusTx.Compiler.Utils
-import                          PlutusTx.PIRTypes
-
-import                qualified PlutusIR                      as PIR
-import                qualified PlutusIR.Compiler.Definitions as PIR
-import                          PlutusIR.Compiler.Names
-import                qualified PlutusIR.MkPir                as PIR
-import                qualified PlutusIR.Purity               as PIR
-
-import                qualified PlutusCore                    as PLC
-import                qualified PlutusCore.Constant           as PLC
-import                qualified PlutusCore.Data               as PLC
-import                          PlutusCore.Quote
-import                qualified PlutusCore.StdLib.Data.Bool   as Bool
-import                qualified PlutusCore.StdLib.Data.List   as List
-import                qualified PlutusCore.StdLib.Data.Pair   as Pair
-import                qualified PlutusCore.StdLib.Data.Unit   as Unit
-
-import                qualified GhcPlugins                    as GHC
-
-import                qualified Language.Haskell.TH.Syntax    as TH
-
-import                          Control.Monad
-import                          Control.Monad.Reader
-
-import                qualified Data.ByteString               as BS
-import                qualified Data.Map                      as Map
-import                          Data.Proxy
-import                qualified Data.Set                      as Set
->>>>>>> ac6d6c898 (WIP)
 
 {- Note [Mapping builtins]
 We want the user to be able to call the Plutus builtins as normal Haskell functions.
@@ -232,24 +156,7 @@ mkBuiltin = PIR.Builtin ()
 -- | The 'TH.Name's for which 'BuiltinNameInfo' needs to be provided.
 builtinNames :: [TH.Name]
 builtinNames = [
-<<<<<<< HEAD
       ''BS.ByteString
-||||||| parent of ac6d6c898 (WIP)
-      ''Builtins.ByteString
-    , ''Integer
-    , ''Bool
-    , ''()
-
-=======
-      ''Builtins.ByteString
-    , ''Builtins.Data
-    , ''Integer
-    , ''Bool
-    , ''()
-    , ''(,)
-    , ''[]
-
->>>>>>> ac6d6c898 (WIP)
     , 'Builtins.concatenate
     , 'Builtins.takeByteString
     , 'Builtins.dropByteString
@@ -279,21 +186,7 @@ builtinNames = [
 
     , 'Builtins.error
 
-<<<<<<< HEAD
     , ''Builtins.BuiltinString
-||||||| parent of ac6d6c898 (WIP)
-    , ''Builtins.String
-=======
-    , 'Builtins.chooseData
-    , 'Builtins.equalsData
-    , 'Builtins.unsafeDataAsConstr
-    , 'Builtins.unsafeDataAsMap
-    , 'Builtins.unsafeDataAsList
-    , 'Builtins.unsafeDataAsI
-    , 'Builtins.unsafeDataAsB
-
-    , ''Builtins.String
->>>>>>> ac6d6c898 (WIP)
     , ''Char
     , 'Builtins.appendString
     , 'Builtins.emptyString
@@ -304,7 +197,6 @@ builtinNames = [
     , 'Builtins.stringToBuiltinString
 
     , 'Builtins.trace
-<<<<<<< HEAD
 
     , ''Builtins.BuiltinBool
     , 'Builtins.ifThenElse
@@ -323,13 +215,6 @@ builtinNames = [
     , 'Builtins.null
     , 'Builtins.head
     , 'Builtins.tail
-||||||| parent of ac6d6c898 (WIP)
-=======
-
-    , 'builtinBoolToBool
-    , 'builtinListToListWithMap
-    , 'builtinPairToPair
->>>>>>> ac6d6c898 (WIP)
     ]
 
 -- | Get the 'GHC.TyThing' for a given 'TH.Name' which was stored in the builtin name info,
@@ -341,26 +226,8 @@ getThing name = do
         Nothing    -> throwSd CompilationError $ "Missing builtin name:" GHC.<+> (GHC.text $ show name)
         Just thing -> pure thing
 
-<<<<<<< HEAD
 defineBuiltinTerm :: Compiling uni fun m => TH.Name -> PIRTerm uni fun -> m ()
 defineBuiltinTerm name term = do
-||||||| parent of ac6d6c898 (WIP)
-defineBuiltinTerm :: Compiling uni fun m => TH.Name -> PIRTerm uni fun -> [GHC.Name] -> m ()
-defineBuiltinTerm name term deps = do
-=======
-defineTermWithType :: Compiling uni fun m => TH.Name -> PIRType uni -> PIRTerm uni fun -> [GHC.Name] -> m ()
-defineTermWithType name ty term deps = do
-    ghcId <- GHC.tyThingId <$> getThing name
-    n <- compileNameFresh $ GHC.getName ghcId
-    -- See Note [Builtin terms and values]
-    let strictness = if PIR.isPure (const PIR.NonStrict) term then PIR.Strict else PIR.NonStrict
-        vd = PIR.VarDecl () n ty
-        def = PIR.Def vd (term, strictness)
-    PIR.defineTerm (LexName $ GHC.getName ghcId) def (Set.fromList $ LexName <$> deps)
-
-defineBuiltinTerm :: Compiling uni fun m => TH.Name -> PIRTerm uni fun -> [GHC.Name] -> m ()
-defineBuiltinTerm name term deps = do
->>>>>>> ac6d6c898 (WIP)
     ghcId <- GHC.tyThingId <$> getThing name
     var <- compileVarFresh ghcId
     -- See Note [Builtin terms and values]
@@ -380,83 +247,17 @@ defineBuiltinType name ty = do
 -- | Add definitions for all the builtin terms to the environment.
 defineBuiltinTerms :: CompilingDefault uni fun m => m ()
 defineBuiltinTerms = do
-<<<<<<< HEAD
 
     -- See Note [Builtin terms and values]
     -- Bool
     defineBuiltinTerm 'Builtins.ifThenElse $ mkBuiltin PLC.IfThenElse
     defineBuiltinTerm 'Builtins.true $ PIR.mkConstant () True
     defineBuiltinTerm 'Builtins.false $ PIR.mkConstant () False
-||||||| parent of ac6d6c898 (WIP)
-    bs <- GHC.getName <$> getThing ''Builtins.ByteString
-    int <- GHC.getName <$> getThing ''Integer
-    bool <- GHC.getName <$> getThing ''Bool
-    unit <- GHC.getName <$> getThing ''()
-    str <- GHC.getName <$> getThing ''Builtins.String
-    char <- GHC.getName <$> getThing ''Char
 
-    intTy <- lookupBuiltinType ''Integer
-    bsTy <- lookupBuiltinType ''Builtins.ByteString
-    strTy <- lookupBuiltinType ''Builtins.String
-=======
-    bs <- GHC.getName <$> getThing ''Builtins.ByteString
-    dat <- GHC.getName <$> getThing ''Builtins.Data
-    int <- GHC.getName <$> getThing ''Integer
-    bool <- GHC.getName <$> getThing ''Bool
-    unit <- GHC.getName <$> getThing ''()
-    pair <- GHC.getName <$> getThing ''(,)
-    str <- GHC.getName <$> getThing ''Builtins.String
-    char <- GHC.getName <$> getThing ''Char
-    lst <- GHC.getName <$> getThing ''[]
-    builtinb2b <- GHC.getName <$> getThing 'builtinBoolToBool
-    builtinl2l <- GHC.getName <$> getThing 'builtinListToListWithMap
-    builtinp2p <- GHC.getName <$> getThing 'builtinPairToPair
-
-    boolTy <- compileType GHC.boolTy
-    listTy <- compileTyCon GHC.listTyCon
-    pairTy <- compileTyCon (GHC.tupleTyCon GHC.Boxed 2)
-    pairConstr <- compileDataConRef (GHC.tupleDataCon GHC.Boxed 2)
-    intTy <- lookupBuiltinType ''Integer
-    bsTy <- lookupBuiltinType ''Builtins.ByteString
-    datTy <- lookupBuiltinType ''Builtins.Data
-    strTy <- lookupBuiltinType ''Builtins.String
->>>>>>> ac6d6c898 (WIP)
-
-<<<<<<< HEAD
     defineBuiltinTerm 'Builtins.unitval $ PIR.mkConstant () ()
     defineBuiltinTerm 'Builtins.chooseUnit $ mkBuiltin PLC.ChooseUnit
-||||||| parent of ac6d6c898 (WIP)
-    -- See Note [Builtin terms and values] for the eta expansion below
-=======
-    do
-        term <- builtinBoolToBool
-        defineTermWithType 'builtinBoolToBool (PIR.TyFun () Bool.bool boolTy) term [bool]
-    do
-        term <- builtinListToListWithMap
-        a <- liftQuote $ freshTyName "a"
-        b <- liftQuote $ freshTyName "b"
-        let ty = PIR.TyForall () a (PIR.Type ()) $
-                PIR.TyForall () b (PIR.Type ()) $
-                PIR.TyFun () (PIR.TyFun () (PIR.TyVar () a) (PIR.TyVar () b)) $
-                PIR.TyFun ()
-                  (PIR.TyApp () List.list (PIR.TyVar () a))
-                  (PIR.TyApp () listTy    (PIR.TyVar () b))
-        defineTermWithType 'builtinListToListWithMap ty term [lst]
-    do
-        term <- builtinPairToPair
-        a <- liftQuote $ freshTyName "a"
-        b <- liftQuote $ freshTyName "b"
-        let ty = PIR.TyForall () a (PIR.Type ()) $ PIR.TyForall () b (PIR.Type ()) $
-                PIR.TyFun ()
-                  (PIR.TyApp () (PIR.TyApp () Pair.pair (PIR.TyVar () a)) (PIR.TyVar () b))
-                  (PIR.TyApp () (PIR.TyApp () pairTy (PIR.TyVar () a)) (PIR.TyVar () b))
-        defineTermWithType 'builtinPairToPair ty term [pair]
-
-    -- See Note [Builtin terms and values] for the eta expansion below
->>>>>>> ac6d6c898 (WIP)
 
     -- Bytestring builtins
-<<<<<<< HEAD
     defineBuiltinTerm 'Builtins.concatenate $ mkBuiltin PLC.Concatenate
     defineBuiltinTerm 'Builtins.takeByteString $ mkBuiltin PLC.TakeByteString
     defineBuiltinTerm 'Builtins.dropByteString $ mkBuiltin PLC.DropByteString
@@ -470,72 +271,8 @@ defineBuiltinTerms = do
 
     -- Crypto
     defineBuiltinTerm 'Builtins.verifySignature $ mkBuiltin PLC.VerifySignature
-||||||| parent of ac6d6c898 (WIP)
-    do
-        let term = mkBuiltin PLC.Concatenate
-        defineBuiltinTerm 'Builtins.concatenate term [bs]
-    do
-        let term = mkBuiltin PLC.TakeByteString
-        defineBuiltinTerm 'Builtins.takeByteString term [int, bs]
-    do
-        let term = mkBuiltin PLC.DropByteString
-        defineBuiltinTerm 'Builtins.dropByteString term [int, bs]
-    do
-        let term = mkBuiltin PLC.SHA2
-        defineBuiltinTerm 'Builtins.sha2_256 term [bs]
-    do
-        let term = mkBuiltin PLC.SHA3
-        defineBuiltinTerm 'Builtins.sha3_256 term [bs]
-    do
-        term <- wrapRel bsTy 2 $ mkBuiltin PLC.EqByteString
-        defineBuiltinTerm 'Builtins.equalsByteString term [bs, bool]
-    do
-        term <- wrapRel bsTy 2 $ mkBuiltin PLC.LtByteString
-        defineBuiltinTerm 'Builtins.lessThanByteString term [bs, bool]
-    do
-        term <- wrapRel bsTy 2 $ mkBuiltin PLC.GtByteString
-        defineBuiltinTerm 'Builtins.greaterThanByteString term [bs, bool]
-    do
-        let term = PIR.mkConstant () BS.empty
-        defineBuiltinTerm 'Builtins.emptyByteString term [bs]
-    do
-        let term = mkBuiltin PLC.DecodeUtf8
-        defineBuiltinTerm 'Builtins.decodeUtf8 term [bs]
-=======
-    do
-        let term = mkBuiltin PLC.Concatenate
-        defineBuiltinTerm 'Builtins.concatenate term [bs]
-    do
-        let term = mkBuiltin PLC.TakeByteString
-        defineBuiltinTerm 'Builtins.takeByteString term [int, bs]
-    do
-        let term = mkBuiltin PLC.DropByteString
-        defineBuiltinTerm 'Builtins.dropByteString term [int, bs]
-    do
-        let term = mkBuiltin PLC.SHA2
-        defineBuiltinTerm 'Builtins.sha2_256 term [bs]
-    do
-        let term = mkBuiltin PLC.SHA3
-        defineBuiltinTerm 'Builtins.sha3_256 term [bs]
-    do
-        term <- wrapRel bsTy 2 $ mkBuiltin PLC.EqByteString
-        defineBuiltinTerm 'Builtins.equalsByteString term [bs, bool, builtinb2b]
-    do
-        term <- wrapRel bsTy 2 $ mkBuiltin PLC.LtByteString
-        defineBuiltinTerm 'Builtins.lessThanByteString term [bs, bool, builtinb2b]
-    do
-        term <- wrapRel bsTy 2 $ mkBuiltin PLC.GtByteString
-        defineBuiltinTerm 'Builtins.greaterThanByteString term [bs, bool, builtinb2b]
-    do
-        let term = PIR.mkConstant () BS.empty
-        defineBuiltinTerm 'Builtins.emptyByteString term [bs]
-    do
-        let term = mkBuiltin PLC.DecodeUtf8
-        defineBuiltinTerm 'Builtins.decodeUtf8 term [bs]
->>>>>>> ac6d6c898 (WIP)
 
     -- Integer builtins
-<<<<<<< HEAD
     defineBuiltinTerm 'Builtins.addInteger $ mkBuiltin PLC.AddInteger
     defineBuiltinTerm 'Builtins.subtractInteger $ mkBuiltin PLC.SubtractInteger
     defineBuiltinTerm 'Builtins.multiplyInteger $ mkBuiltin PLC.MultiplyInteger
@@ -548,159 +285,6 @@ defineBuiltinTerms = do
     defineBuiltinTerm 'Builtins.lessThanInteger $ mkBuiltin PLC.LessThanInteger
     defineBuiltinTerm 'Builtins.lessThanEqInteger $ mkBuiltin PLC.LessThanEqInteger
     defineBuiltinTerm 'Builtins.equalsInteger $ mkBuiltin PLC.EqInteger
-||||||| parent of ac6d6c898 (WIP)
-    do
-        let term = mkBuiltin PLC.AddInteger
-        defineBuiltinTerm 'Builtins.addInteger term [int]
-    do
-        let term = mkBuiltin PLC.SubtractInteger
-        defineBuiltinTerm 'Builtins.subtractInteger term [int]
-    do
-        let term = mkBuiltin PLC.MultiplyInteger
-        defineBuiltinTerm 'Builtins.multiplyInteger term [int]
-    do
-        let term = mkBuiltin PLC.DivideInteger
-        defineBuiltinTerm 'Builtins.divideInteger term [int]
-    do
-        let term = mkBuiltin PLC.ModInteger
-        defineBuiltinTerm 'Builtins.modInteger term [int]
-    do
-        let term = mkBuiltin PLC.QuotientInteger
-        defineBuiltinTerm 'Builtins.quotientInteger term [int]
-    do
-        let term = mkBuiltin PLC.RemainderInteger
-        defineBuiltinTerm 'Builtins.remainderInteger term [int]
-    do
-        term <- wrapRel intTy 2 $ mkBuiltin PLC.GreaterThanInteger
-        defineBuiltinTerm 'Builtins.greaterThanInteger term [int, bool]
-    do
-        term <- wrapRel intTy 2 $ mkBuiltin PLC.GreaterThanEqInteger
-        defineBuiltinTerm 'Builtins.greaterThanEqInteger term [int, bool]
-    do
-        term <- wrapRel intTy 2 $ mkBuiltin PLC.LessThanInteger
-        defineBuiltinTerm 'Builtins.lessThanInteger term [int, bool]
-    do
-        term <- wrapRel intTy 2 $ mkBuiltin PLC.LessThanEqInteger
-        defineBuiltinTerm 'Builtins.lessThanEqInteger term [int, bool]
-    do
-        term <- wrapRel intTy 2 $ mkBuiltin PLC.EqInteger
-        defineBuiltinTerm 'Builtins.equalsInteger term [int, bool]
-
-    -- Blockchain builtins
-    do
-        term <- wrapRel bsTy 3 $ mkBuiltin PLC.VerifySignature
-        defineBuiltinTerm 'Builtins.verifySignature term [bs, bool]
-=======
-    do
-        let term = mkBuiltin PLC.AddInteger
-        defineBuiltinTerm 'Builtins.addInteger term [int]
-    do
-        let term = mkBuiltin PLC.SubtractInteger
-        defineBuiltinTerm 'Builtins.subtractInteger term [int]
-    do
-        let term = mkBuiltin PLC.MultiplyInteger
-        defineBuiltinTerm 'Builtins.multiplyInteger term [int]
-    do
-        let term = mkBuiltin PLC.DivideInteger
-        defineBuiltinTerm 'Builtins.divideInteger term [int]
-    do
-        let term = mkBuiltin PLC.ModInteger
-        defineBuiltinTerm 'Builtins.modInteger term [int]
-    do
-        let term = mkBuiltin PLC.QuotientInteger
-        defineBuiltinTerm 'Builtins.quotientInteger term [int]
-    do
-        let term = mkBuiltin PLC.RemainderInteger
-        defineBuiltinTerm 'Builtins.remainderInteger term [int]
-    do
-        term <- wrapRel intTy 2 $ mkBuiltin PLC.GreaterThanInteger
-        defineBuiltinTerm 'Builtins.greaterThanInteger term [int, bool, builtinb2b]
-    do
-        term <- wrapRel intTy 2 $ mkBuiltin PLC.GreaterThanEqInteger
-        defineBuiltinTerm 'Builtins.greaterThanEqInteger term [int, bool, builtinb2b]
-    do
-        term <- wrapRel intTy 2 $ mkBuiltin PLC.LessThanInteger
-        defineBuiltinTerm 'Builtins.lessThanInteger term [int, bool, builtinb2b]
-    do
-        term <- wrapRel intTy 2 $ mkBuiltin PLC.LessThanEqInteger
-        defineBuiltinTerm 'Builtins.lessThanEqInteger term [int, bool, builtinb2b]
-    do
-        term <- wrapRel intTy 2 $ mkBuiltin PLC.EqInteger
-        defineBuiltinTerm 'Builtins.equalsInteger term [int, bool, builtinb2b]
-
-    -- Data builtins
-    do
-        let term = mkBuiltin PLC.ChooseData
-        defineBuiltinTerm 'Builtins.chooseData term [dat]
-    do
-        i <- liftQuote $ freshName "i"
-        args <- liftQuote $ freshName "args"
-        let term = PIR.LamAbs () i intTy $ PIR.LamAbs () args (PLC.TyApp () listTy datTy) $
-                PIR.mkIterApp () (mkBuiltin PLC.ConstrData) [PIR.Var () i]
-        --let term = mkBuiltin PLC.Constr
-        defineBuiltinTerm 'Builtins.mkConstr term [dat]
-    do
-        let term = mkBuiltin PLC.IData
-        defineBuiltinTerm 'Builtins.mkI term [dat, int]
-    do
-        let term = mkBuiltin PLC.BData
-        defineBuiltinTerm 'Builtins.mkB term [dat, bs]
-    do
-        d <- liftQuote $ freshName "d"
-        x <- liftQuote $ freshName "x"
-        l2l <- lookupBuiltinTerm 'builtinListToListWithMap
-        let ucd = PIR.Apply () (mkBuiltin PLC.UnConstrData) (PIR.Var () d)
-        let idfun = PIR.LamAbs () x datTy (PIR.Var () x)
-        let pconstrInst = PIR.mkIterInst () pairConstr [intTy, PIR.TyApp () listTy datTy]
-        let builtinListTy = List.list
-
-        let componentTypes = [intTy, PIR.TyApp () builtinListTy datTy]
-        let fstt = PIR.mkIterInst () (PIR.Builtin () PLC.FstPair) componentTypes
-        let sndd = PIR.mkIterInst () (PIR.Builtin () PLC.SndPair) componentTypes
-
-        let term = PIR.LamAbs () d datTy $
-                PIR.mkIterApp () pconstrInst [
-                  PIR.Apply () fstt ucd
-                  , PIR.mkIterApp () (PIR.mkIterInst () l2l [datTy, datTy]) [idfun, PIR.Apply () sndd ucd]
-                  ]
-
-        defineBuiltinTerm 'Builtins.unsafeDataAsConstr term [dat, builtinl2l]
-    do
-        d <- liftQuote $ freshName "d"
-        p2p <- lookupBuiltinTerm 'builtinPairToPair
-        l2l <- lookupBuiltinTerm 'builtinListToListWithMap
-        let bpd = PIR.mkIterTyApp () Pair.pair [datTy, datTy]
-            hpd = PIR.mkIterTyApp () pairTy [datTy, datTy]
-            term = PIR.LamAbs () d datTy $
-              PIR.mkIterApp () (PIR.mkIterInst () l2l [bpd, hpd]) [
-                  PIR.mkIterInst () p2p [datTy, datTy]
-                  , PIR.Apply () (mkBuiltin PLC.UnMapData) (PIR.Var () d)
-                  ]
-        defineBuiltinTerm 'Builtins.unsafeDataAsMap term [dat, builtinp2p, builtinl2l]
-    do
-        d <- liftQuote $ freshName "d"
-        x <- liftQuote $ freshName "x"
-        l2l <- lookupBuiltinTerm 'builtinListToListWithMap
-        let idfun =PIR.LamAbs () x datTy (PIR.Var () x)
-            term = PIR.LamAbs () d datTy $
-                PIR.mkIterApp () (PIR.mkIterInst () l2l [datTy, datTy])
-                [idfun, PIR.Apply () (mkBuiltin PLC.UnListData) (PIR.Var () d)]
-        defineBuiltinTerm 'Builtins.unsafeDataAsList term [dat, lst, builtinl2l]
-    do
-        let term = mkBuiltin PLC.UnIData
-        defineBuiltinTerm 'Builtins.unsafeDataAsI term [dat]
-    do
-        let term = mkBuiltin PLC.UnBData
-        defineBuiltinTerm 'Builtins.unsafeDataAsB term [dat]
-    do
-        term <- wrapRel datTy 2 $ mkBuiltin PLC.EqualsData
-        defineBuiltinTerm 'Builtins.equalsData term [dat, bool, builtinb2b]
-
-    -- Blockchain builtins
-    do
-        term <- wrapRel bsTy 3 $ mkBuiltin PLC.VerifySignature
-        defineBuiltinTerm 'Builtins.verifySignature term [bs, bool, builtinb2b]
->>>>>>> ac6d6c898 (WIP)
 
     -- Error
     -- See Note [Delaying error]
@@ -708,7 +292,6 @@ defineBuiltinTerms = do
     defineBuiltinTerm 'Builtins.error func
 
     -- Strings and chars
-<<<<<<< HEAD
     defineBuiltinTerm 'Builtins.appendString $ mkBuiltin PLC.Append
     defineBuiltinTerm 'Builtins.emptyString $ PIR.mkConstant () ("" :: String)
     defineBuiltinTerm 'Builtins.charToString $ mkBuiltin PLC.CharToString
@@ -724,94 +307,33 @@ defineBuiltinTerms = do
     defineBuiltinTerm 'Builtins.null $ mkBuiltin PLC.NullList
     defineBuiltinTerm 'Builtins.head $ mkBuiltin PLC.HeadList
     defineBuiltinTerm 'Builtins.tail $ mkBuiltin PLC.TailList
-||||||| parent of ac6d6c898 (WIP)
-    do
-        let term = mkBuiltin PLC.Append
-        defineBuiltinTerm 'Builtins.appendString term [str]
-    do
-        let term = PIR.mkConstant () ("" :: String)
-        defineBuiltinTerm 'Builtins.emptyString term [str]
-    do
-        let term = mkBuiltin PLC.CharToString
-        defineBuiltinTerm 'Builtins.charToString term [char, str]
-    do
-        term <- wrapRel strTy 2 $ mkBuiltin PLC.EqualsString
-        defineBuiltinTerm 'Builtins.equalsString term [str, bool]
-    do
-        term <- wrapUnitFun strTy $ mkBuiltin PLC.Trace
-        defineBuiltinTerm 'Builtins.trace term [str, unit]
-    do
-        let term = mkBuiltin PLC.EncodeUtf8
-        defineBuiltinTerm 'Builtins.encodeUtf8 term [bs]
-=======
-    do
-        let term = mkBuiltin PLC.Append
-        defineBuiltinTerm 'Builtins.appendString term [str]
-    do
-        let term = PIR.mkConstant () ("" :: String)
-        defineBuiltinTerm 'Builtins.emptyString term [str]
-    do
-        let term = mkBuiltin PLC.CharToString
-        defineBuiltinTerm 'Builtins.charToString term [char, str]
-    do
-        term <- wrapRel strTy 2 $ mkBuiltin PLC.EqualsString
-        defineBuiltinTerm 'Builtins.equalsString term [str, bool, builtinb2b]
-    do
-        term <- wrapUnitFun strTy $ mkBuiltin PLC.Trace
-        defineBuiltinTerm 'Builtins.trace term [str, unit]
-    do
-        let term = mkBuiltin PLC.EncodeUtf8
-        defineBuiltinTerm 'Builtins.encodeUtf8 term [bs]
->>>>>>> ac6d6c898 (WIP)
+
+    -- Data
+    defineBuiltinTerm 'Builtins.chooseData $ mkBuiltin PLC.ChooseData
+    defineBuiltinTerm 'Builtins.mkConstr $ mkBuiltin PLC.ConstrData
+    defineBuiltinTerm 'Builtins.mkMap $ mkBuiltin PLC.MapData
+    defineBuiltinTerm 'Builtins.mkList $ mkBuiltin PLC.ListData
+    defineBuiltinTerm 'Builtins.mkI $ mkBuiltin PLC.IData
+    defineBuiltinTerm 'Builtins.mkB $ mkBuiltin PLC.BData
+    defineBuiltinTerm 'Builtins.unsafeDataAsConstr $ mkBuiltin PLC.UnConstrData
+    defineBuiltinTerm 'Builtins.unsafeDataAsMap $ mkBuiltin PLC.UnMapData
+    defineBuiltinTerm 'Builtins.unsafeDataAsList $ mkBuiltin PLC.UnListData
+    defineBuiltinTerm 'Builtins.unsafeDataAsB $ mkBuiltin PLC.UnBData
+    defineBuiltinTerm 'Builtins.unsafeDataAsI $ mkBuiltin PLC.UnIData
 
 defineBuiltinTypes
     :: CompilingDefault uni fun m
     => m ()
 defineBuiltinTypes = do
-<<<<<<< HEAD
     defineBuiltinType ''BS.ByteString $ PLC.toTypeAst $ Proxy @BS.ByteString
     defineBuiltinType ''Integer $ PLC.toTypeAst $ Proxy @Integer
     defineBuiltinType ''Builtins.BuiltinBool $ PLC.toTypeAst $ Proxy @Bool
     defineBuiltinType ''Builtins.BuiltinUnit $ PLC.toTypeAst $ Proxy @()
     defineBuiltinType ''Builtins.BuiltinString $ PLC.toTypeAst $ Proxy @String
     defineBuiltinType ''Char $ PLC.toTypeAst $ Proxy @Char
+    defineBuiltinType ''Builtins.BuiltinData $ PLC.toTypeAst $ Proxy @PLC.Data
     defineBuiltinType ''Builtins.BuiltinPair $ PLC.TyBuiltin () (PLC.SomeTypeIn PLC.DefaultUniProtoPair)
     defineBuiltinType ''Builtins.BuiltinList $ PLC.TyBuiltin () (PLC.SomeTypeIn PLC.DefaultUniProtoList)
-||||||| parent of ac6d6c898 (WIP)
-    do
-        let ty = PLC.toTypeAst $ Proxy @BS.ByteString
-        defineBuiltinType ''Builtins.ByteString ty []
-    do
-        let ty = PLC.toTypeAst $ Proxy @Integer
-        defineBuiltinType ''Integer ty []
-
-    -- Strings and chars
-    do
-        let ty = PLC.toTypeAst $ Proxy @String
-        defineBuiltinType ''Builtins.String ty []
-    do
-        let ty = PLC.toTypeAst $ Proxy @Char
-        defineBuiltinType ''Char ty []
-=======
-    do
-        let ty = PLC.toTypeAst $ Proxy @BS.ByteString
-        defineBuiltinType ''Builtins.ByteString ty []
-    do
-        let ty = PLC.toTypeAst $ Proxy @Integer
-        defineBuiltinType ''Integer ty []
-
-    do
-        let ty = PLC.toTypeAst $ Proxy @PLC.Data
-        defineBuiltinType ''Builtins.Data ty []
-
-    -- Strings and chars
-    do
-        let ty = PLC.toTypeAst $ Proxy @String
-        defineBuiltinType ''Builtins.String ty []
-    do
-        let ty = PLC.toTypeAst $ Proxy @Char
-        defineBuiltinType ''Char ty []
->>>>>>> ac6d6c898 (WIP)
 
 -- | Lookup a builtin term by its TH name. These are assumed to be present, so fails if it cannot find it.
 lookupBuiltinTerm :: Compiling uni fun m => TH.Name -> m (PIRTerm uni fun)
@@ -850,191 +372,3 @@ errorTy :: Compiling uni fun m => m (PIRType uni)
 errorTy = do
     tyname <- safeFreshTyName "a"
     pure $ PIR.TyForall () tyname (PIR.Type ()) (PIR.TyVar () tyname)
-<<<<<<< HEAD
-||||||| parent of ac6d6c898 (WIP)
-
--- TODO: bind the converter to a name too. Need an appropriate GHC.Name for
--- it, since that's what our definitions are hung off. Also the type wouldn't
--- be a simple conversion of the Haskell type, because it takes a Scott boolean.
--- | Convert a Scott-encoded Boolean into a Haskell Boolean.
-scottBoolToHaskellBool :: CompilingDefault uni fun m => m (PIRTerm uni fun)
-scottBoolToHaskellBool = do
-    let scottBoolTy = Bool.bool
-    haskellBoolTy <- compileType GHC.boolTy
-
-    arg <- liftQuote $ freshName "b"
-    let instantiatedMatch = PIR.TyInst () (PIR.Builtin () PLC.IfThenElse) haskellBoolTy
-
-    haskellTrue <- compileDataConRef GHC.trueDataCon
-    haskellFalse <- compileDataConRef GHC.falseDataCon
-    pure $
-        PIR.LamAbs () arg scottBoolTy $
-        PIR.mkIterApp () instantiatedMatch [ (PIR.Var () arg), haskellTrue, haskellFalse ]
-
--- | Wrap an relation of arity @n@ that produces a Scott boolean.
-wrapRel :: CompilingDefault uni fun m => PIRType uni -> Int -> PIRTerm uni fun -> m (PIRTerm uni fun)
-wrapRel argTy arity term = do
-    args <- replicateM arity $ do
-        name <- safeFreshName "arg"
-        pure $ PIR.VarDecl () name argTy
-
-    converter <- scottBoolToHaskellBool
-
-    pure $
-        PIR.mkIterLamAbs args $
-        PIR.Apply () converter (PIR.mkIterApp () term (fmap (PIR.mkVar ()) args))
-
--- | Convert a Scott-encoded Unit into a Haskell Unit.
-scottUnitToHaskellUnit :: CompilingDefault uni fun m => m (PIRTerm uni fun)
-scottUnitToHaskellUnit = do
-    let scottUnitTy = Unit.unit
-
-    arg <- liftQuote $ freshName "b"
-
-    haskellUnitVal <- compileDataConRef GHC.unitDataCon
-    pure $ PIR.LamAbs () arg scottUnitTy haskellUnitVal
-
--- | Wrap an function with the given argument type that produces a Scott unit.
-wrapUnitFun :: CompilingDefault uni fun m => PIRType uni -> PIRTerm uni fun -> m (PIRTerm uni fun)
-wrapUnitFun argTy term = do
-    arg <- do
-        name <- safeFreshName "arg"
-        pure $ PIR.VarDecl () name argTy
-
-    converter <- scottUnitToHaskellUnit
-
-    pure $
-        PIR.mkIterLamAbs [arg] $
-        PIR.Apply () converter (PIR.Apply () term (PIR.mkVar () arg))
-=======
-
--- TODO: bind the converter to a name too. Need an appropriate GHC.Name for
--- it, since that's what our definitions are hung off. Also the type wouldn't
--- be a simple conversion of the Haskell type, because it takes a Scott boolean.
--- | Convert a builtin Boolean into a Haskell Boolean.
-builtinBoolToBool :: CompilingDefault uni fun m => m (PIRTerm uni fun)
-builtinBoolToBool = do
-    let builtinBoolTy = Bool.bool
-    haskellBoolTy <- compileType GHC.boolTy
-
-    arg <- liftQuote $ freshName "b"
-    let instantiatedMatch = PIR.TyInst () (PIR.Builtin () PLC.IfThenElse) haskellBoolTy
-
-    haskellTrue <- compileDataConRef GHC.trueDataCon
-    haskellFalse <- compileDataConRef GHC.falseDataCon
-    pure $
-        PIR.LamAbs () arg builtinBoolTy $
-        PIR.mkIterApp () instantiatedMatch [ (PIR.Var () arg), haskellTrue, haskellFalse ]
-
--- | Wrap an relation of arity @n@ that produces a builtin boolean.
-wrapRel :: CompilingDefault uni fun m => PIRType uni -> Int -> PIRTerm uni fun -> m (PIRTerm uni fun)
-wrapRel argTy arity term = do
-    args <- replicateM arity $ do
-        name <- safeFreshName "arg"
-        pure $ PIR.VarDecl () name argTy
-
-    converter <- lookupBuiltinTerm 'builtinBoolToBool
-
-    pure $
-        PIR.mkIterLamAbs args $
-        PIR.Apply () converter (PIR.mkIterApp () term (fmap (PIR.mkVar ()) args))
-
--- | Convert a builtin Unit into a Haskell Unit.
-builtinUnitToHaskellUnit :: CompilingDefault uni fun m => m (PIRTerm uni fun)
-builtinUnitToHaskellUnit = do
-    let builtinUnitTy = Unit.unit
-
-    arg <- liftQuote $ freshName "b"
-
-    haskellUnitVal <- compileDataConRef GHC.unitDataCon
-    pure $ PIR.LamAbs () arg builtinUnitTy haskellUnitVal
-
--- | Wrap an function with the given argument type that produces a builtin unit.
-wrapUnitFun :: CompilingDefault uni fun m => PIRType uni -> PIRTerm uni fun -> m (PIRTerm uni fun)
-wrapUnitFun argTy term = do
-    arg <- do
-        name <- safeFreshName "arg"
-        pure $ PIR.VarDecl () name argTy
-
-    converter <- builtinUnitToHaskellUnit
-
-    pure $
-        PIR.mkIterLamAbs [arg] $
-        PIR.Apply () converter (PIR.Apply () term (PIR.mkVar () arg))
-
-builtinPairToPair :: CompilingDefault uni fun m => m (PIRTerm uni fun)
-builtinPairToPair = do
-    aty <- liftQuote $ freshTyName "a"
-    bty <- liftQuote $ freshTyName "b"
-    let ab = [ PIR.TyVar () aty, PIR.TyVar () bty ]
-
-    -- pair
-    let builtinPairTy = Pair.pair
-    -- [pair a b]
-    let builtinPairTyApp = PIR.mkIterTyApp () builtinPairTy ab
-    -- (,) (the type constructor)
-    haskellPairTy <- compileTyCon (GHC.tupleTyCon GHC.Boxed 2)
-    -- [(,) a b]
-    let haskellPairTyApp = PIR.mkIterTyApp () haskellPairTy ab
-    -- (,) (the data constructor)
-    haskellPairConstr <- compileDataConRef (GHC.tupleDataCon GHC.Boxed 2)
-    -- { (,) a b}
-    let haskellPairConstrInst = PIR.mkIterInst () haskellPairConstr ab
-
-
-    let uncur = Pair.uncurry
-    -- Type arguments are first the two types of the pair components, and then
-    -- the result type.
-    let instantiatedUncur = PIR.mkIterInst () uncur (ab ++ [ haskellPairTyApp ])
-
-    arg <- liftQuote $ freshName "p"
-    pure $
-        PIR.TyAbs () aty (PLC.Type ()) $
-        PIR.TyAbs () bty (PLC.Type ()) $
-        PIR.LamAbs () arg builtinPairTyApp $
-        PIR.mkIterApp () instantiatedUncur [haskellPairConstrInst, PIR.Var () arg]
-
-builtinListToListWithMap :: CompilingDefault uni fun m => m (PIRTerm uni fun)
-builtinListToListWithMap = do
-    aty <- liftQuote $ freshTyName "a"
-    bty <- liftQuote $ freshTyName "b"
-    let a = PIR.TyVar () aty
-    let b = PIR.TyVar () bty
-
-    -- list
-    let builtinListTy = List.list
-    -- [list a]
-    let builtinListTyApp = PIR.TyApp () builtinListTy a
-    -- [] (the type constructor)
-    haskellListTy <- compileTyCon GHC.listTyCon
-    -- [[] a]
-    let haskellListTyApp = PIR.TyApp () haskellListTy b
-    -- (:) (the data constructor)
-    haskellConsConstr <- compileDataConRef GHC.consDataCon
-    -- { (:} a }
-    let haskellConsConstrInst = PIR.TyInst () haskellConsConstr b
-    -- [] (the data constructor)
-    haskellNilConstr <- compileDataConRef GHC.nilDataCon
-    -- { [] a }
-    let haskellNilConstrInst = PIR.TyInst () haskellNilConstr b
-
-    let foldrList = List.foldrList
-    -- Type arguments are first types of the list contents, and then the result type.
-    let instantiatedFold = PIR.mkIterInst () foldrList [a , haskellListTyApp]
-
-    farg <- liftQuote $ freshName "f"
-    larg <- liftQuote $ freshName "l"
-
-    folder <- do
-      e <- liftQuote $ freshName "a"
-      r <- liftQuote $ freshName "r"
-      pure $ PIR.mkIterLamAbs [PIR.VarDecl () e (PIR.TyVar () aty), PIR.VarDecl () r haskellListTyApp] $
-          PIR.mkIterApp () haskellConsConstrInst [PIR.Apply () (PIR.Var () farg) (PIR.Var () e), PIR.Var () r]
-
-    pure $
-        PIR.TyAbs () aty (PLC.Type ()) $
-        PIR.TyAbs () bty (PLC.Type ()) $
-        PIR.LamAbs () farg (PLC.TyFun () (PIR.TyVar () aty) (PIR.TyVar () bty)) $
-        PIR.LamAbs () larg builtinListTyApp $
-        PIR.mkIterApp () instantiatedFold [folder, haskellNilConstrInst, PIR.Var () larg]
->>>>>>> ac6d6c898 (WIP)
