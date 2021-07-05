@@ -17,6 +17,7 @@
 {-# OPTIONS_GHC -fno-specialise #-}
 
 -- | Functions for working with scripts on the ledger.
+{-# LANGUAGE TypeOperators       #-}
 module Plutus.V1.Ledger.Scripts(
     -- * Scripts
     Script (..),
@@ -74,6 +75,7 @@ import           Plutus.V1.Ledger.Bytes           (LedgerBytes (..))
 import           Plutus.V1.Ledger.Orphans         ()
 import qualified PlutusCore                       as PLC
 import qualified PlutusCore.Data                  as PLC
+import qualified PlutusCore.MkPlc                 as PLC
 import           PlutusTx                         (CompiledCode, IsData (..), getPlc, makeLift)
 import           PlutusTx.Builtins                as Builtins
 import           PlutusTx.Builtins.Internal       as BI
@@ -160,6 +162,9 @@ fromPlc :: UPLC.Program UPLC.NamedDeBruijn PLC.DefaultUni PLC.DefaultFun () -> S
 fromPlc (UPLC.Program a v t) =
     let nameless = UPLC.termMapNames UPLC.unNameDeBruijn t
     in Script $ UPLC.Program a v nameless
+
+constantScript :: (PLC.DefaultUni `PLC.Contains` a) => a -> Script
+constantScript a = Script $ UPLC.Program () (PLC.defaultVersion ()) $ PLC.mkConstant () a
 
 -- | Given two 'Script's, compute the 'Script' that consists of applying the first to the second.
 applyScript :: Script -> Script -> Script
@@ -334,8 +339,8 @@ applyValidator
     -> Datum
     -> Redeemer
     -> Script
-applyValidator (Context valData) (Validator validator) (Datum datum) (Redeemer redeemer) =
-    ((validator `applyScript` (fromCompiledCode $ liftCode datum)) `applyScript` (fromCompiledCode $ liftCode redeemer)) `applyScript` (fromCompiledCode $ liftCode valData)
+applyValidator (Context (BuiltinData valData)) (Validator validator) (Datum (BuiltinData datum)) (Redeemer (BuiltinData redeemer)) =
+    ((validator `applyScript` constantScript datum) `applyScript` constantScript redeemer) `applyScript` constantScript valData
 
 -- | Evaluate a 'Validator' with its 'Context', 'Datum', and 'Redeemer', returning the log.
 runScript
@@ -354,8 +359,8 @@ applyMintingPolicyScript
     -> MintingPolicy
     -> Redeemer
     -> Script
-applyMintingPolicyScript (Context valData) (MintingPolicy validator) (Redeemer red) =
-    (validator `applyScript` (fromCompiledCode $ liftCode red)) `applyScript` (fromCompiledCode $ liftCode valData)
+applyMintingPolicyScript (Context (BuiltinData valData)) (MintingPolicy validator) (Redeemer (BuiltinData red)) =
+    (validator `applyScript` constantScript red) `applyScript` constantScript valData
 
 -- | Evaluate a 'MintingPolicy' with its 'Context' and 'Redeemer', returning the log.
 runMintingPolicyScript
