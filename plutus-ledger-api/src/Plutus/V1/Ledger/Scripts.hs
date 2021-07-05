@@ -80,7 +80,6 @@ import           PlutusTx                         (CompiledCode, IsData (..), ge
 import           PlutusTx.Builtins                as Builtins
 import           PlutusTx.Builtins.Internal       as BI
 import           PlutusTx.Evaluation              (ErrorWithCause (..), EvaluationError (..), evaluateCekTrace)
-import           PlutusTx.Lift                    (liftCode)
 import           PlutusTx.Prelude
 import qualified UntypedPlutusCore                as UPLC
 
