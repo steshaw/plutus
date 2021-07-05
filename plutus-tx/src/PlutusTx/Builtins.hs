@@ -31,8 +31,9 @@ module PlutusTx.Builtins (
                                 -- * Error
                                 , error
                                 -- * Data
-                                , Data
+                                , BuiltinData
                                 , chooseData
+                                , matchData
                                 , equalsData
                                 , mkConstr
                                 , mkMap
@@ -57,8 +58,6 @@ module PlutusTx.Builtins (
 
 import           Data.ByteString            as BS
 import           Prelude                    hiding (String, error)
-
-import           PlutusCore.Data
 
 import           PlutusTx.Builtins.Class
 import           PlutusTx.Builtins.Internal (BuiltinData, BuiltinString)
@@ -260,3 +259,22 @@ unsafeDataAsB d = fromBuiltin (BI.unsafeDataAsB d)
 {-# INLINABLE equalsData #-}
 equalsData :: BuiltinData -> BuiltinData -> Bool
 equalsData d1 d2 = fromBuiltin (BI.equalsData d1 d2)
+
+{-# INLINABLE matchData #-}
+matchData
+    :: BuiltinData
+    -> (Integer -> [BuiltinData] -> r)
+    -> ([(BuiltinData, BuiltinData)] -> r)
+    -> ([BuiltinData] -> r)
+    -> (Integer -> r)
+    -> (BS.ByteString -> r)
+    -> r
+matchData d constrCase mapCase listCase iCase bCase =
+   chooseData
+   (\() -> uncurry constrCase (unsafeDataAsConstr d))
+   (\() -> mapCase (unsafeDataAsMap d))
+   (\() -> listCase (unsafeDataAsList d))
+   (\() -> iCase (unsafeDataAsI d))
+   (\() -> bCase (unsafeDataAsB d))
+   d
+   ()

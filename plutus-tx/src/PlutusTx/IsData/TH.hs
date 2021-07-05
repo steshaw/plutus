@@ -7,12 +7,11 @@ import           Data.Traversable
 import qualified Language.Haskell.TH          as TH
 import qualified Language.Haskell.TH.Datatype as TH
 
-import           PlutusCore.Data
-import           PlutusTx.Data
 
 import qualified PlutusTx.Applicative         as PlutusTx
 import qualified PlutusTx.Eq                  as PlutusTx
 
+import           PlutusTx.Builtins
 import           PlutusTx.IsData.Class
 
 toDataClause :: (TH.ConstructorInfo, Int) -> TH.Q TH.Clause
@@ -20,9 +19,8 @@ toDataClause (TH.ConstructorInfo{TH.constructorName=name, TH.constructorFields=a
     argNames <- for argTys $ \_ -> TH.newName "arg"
     let pat = TH.conP name (fmap TH.varP argNames)
     let argsToData = fmap (\v -> [| toData $(TH.varE v) |]) argNames
-    --let app = [| Constr index $(TH.listE argsToData) |]
-    let fakeBody = [| error "no" |]
-    TH.clause [pat] (TH.normalB fakeBody) []
+    let app = [| mkConstr index $(TH.listE argsToData) |]
+    TH.clause [pat] (TH.normalB app) []
 
 toDataClauses :: [(TH.ConstructorInfo, Int)] -> [TH.Q TH.Clause]
 toDataClauses indexedCons = toDataClause <$> indexedCons
@@ -34,19 +32,11 @@ fromDataClause (TH.ConstructorInfo{TH.constructorName=name, TH.constructorFields
     let lpat = TH.listP (fmap TH.varP argNames)
     let argsFromData = fmap (\v -> [| fromData $(TH.varE v) |]) argNames
     let app = foldl' (\h e -> [| $h PlutusTx.<*> $e |]) [| PlutusTx.pure $(TH.conE name) |] argsFromData
-    {-
-    indexName <- TH.newName "i"
-    let pat = TH.conP 'Constr [TH.varP indexName , TH.listP (fmap TH.varP argNames)]
-    let argsFromData = fmap (\v -> [| fromData $(TH.varE v) |]) argNames
-    let app = foldl' (\h e -> [| $h PlutusTx.<*> $e |]) [| PlutusTx.pure $(TH.conE name) |] argsFromData
-    let guard = [| $(TH.varE indexName) PlutusTx.== index |]
-    TH.clause [pat] (TH.guardedB [TH.normalGE guard app]) []
-    -}
 
     let body =
             [|
                 let reconstruct i $(lpat) | i PlutusTx.== index = $(app)
-                    reconstruct _ _ = error "wrong constructor"
+                    reconstruct _ _ = Prelude.error "wrong constructor"
                 in matchData $(TH.varE dName) reconstruct (const Nothing) (const Nothing) (const Nothing) (const Nothing)
              |]
     TH.clause [TH.varP dName] (TH.normalB body) []

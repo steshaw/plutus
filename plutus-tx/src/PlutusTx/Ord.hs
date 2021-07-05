@@ -1,8 +1,6 @@
 {-# OPTIONS_GHC -fno-omit-interface-pragmas #-}
 module PlutusTx.Ord (Ord(..), Max (..), Min (..), Ordering(..)) where
 
-import           PlutusCore.Data
-
 import qualified PlutusTx.Builtins  as Builtins
 import           PlutusTx.Eq
 import           PlutusTx.Semigroup
@@ -100,22 +98,6 @@ instance Ord () where
 instance (Ord a, Ord b) => Ord (a, b) where
     {-# INLINABLE compare #-}
     compare (a, b) (a', b') = compare a a' <> compare b b'
-
-instance Ord Data where
-    {-# INLINABLE compare #-}
-    compare (Constr i args) (Constr i' args') = compare i i' <> compare args args'
-    compare Constr{} _                        = LT
-    compare _ Constr {}                       = GT
-    compare (Map entries) (Map entries')      = compare entries entries'
-    compare Map{} _                           = LT
-    compare _ Map{}                           = GT
-    compare (List ds) (List ds')              = compare ds ds'
-    compare List{} _                          = LT
-    compare _ List{}                          = GT
-    compare (I i) (I i')                      = compare i i'
-    compare I{} _                             = LT
-    compare _ I{}                             = GT
-    compare (B b) (B b')                      = compare b b'
 
 newtype Max a = Max { getMax :: a }
 

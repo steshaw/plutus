@@ -198,22 +198,3 @@ infixr 0 $
 -- | Plutus Tx version of 'Data.Function.($)'.
 ($) :: (a -> b) -> a -> b
 f $ a = f a
-
-{-# INLINABLE matchData #-}
-matchData
-    :: Data
-    -> (Haskell.Integer -> [BuiltinData] -> r)
-    -> ([(BuiltinData, BuiltinData)] -> r)
-    -> ([BuiltinData] -> r)
-    -> (Haskell.Integer -> r)
-    -> (BS.ByteString -> r)
-    -> r
-matchData d constrCase mapCase listCase iCase bCase =
-   chooseData
-   (\() -> Haskell.uncurry constrCase (unsafeDataAsConstr d))
-   (\() -> mapCase (unsafeDataAsMap d))
-   (\() -> listCase (unsafeDataAsList d))
-   (\() -> iCase (unsafeDataAsI d))
-   (\() -> bCase (unsafeDataAsB d))
-   d
-   ()
