@@ -1,7 +1,1 @@
-<<<<<<< HEAD
 (delay (lam case_True_43 (lam case_False_44 case_True_43)))
-||||||| parent of ac6d6c898 (WIP)
-(delay (lam case_True_44 (lam case_False_45 case_True_44)))
-=======
-(delay (lam case_True_45 (lam case_False_46 case_True_45)))
->>>>>>> ac6d6c898 (WIP)

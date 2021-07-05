@@ -111,7 +111,7 @@ traceRepeatedly = $$(compile
 
 data SomeType = One Integer | Two | Three ()
 
-someData :: (Data, Data, Data)
+someData :: (BuiltinData, BuiltinData, BuiltinData)
 someData = (toData (One 1), toData Two, toData (Three ()))
 
 makeIsDataIndexed ''SomeType [('Two, 0), ('One, 1), ('Three, 2)]

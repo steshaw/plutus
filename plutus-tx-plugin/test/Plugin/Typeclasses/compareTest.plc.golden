@@ -12,83 +12,6 @@
         (vardecl True Bool) (vardecl False Bool)
       )
     )
-<<<<<<< HEAD
-||||||| parent of ac6d6c898 (WIP)
-    (termbind
-      (strict)
-      (vardecl equalsInteger (fun (con integer) (fun (con integer) Bool)))
-      (lam
-        arg
-        (con integer)
-        (lam
-          arg
-          (con integer)
-          (let
-            (nonrec)
-            (termbind
-              (strict)
-              (vardecl b (con bool))
-              [ [ (builtin eqInteger) arg ] arg ]
-            )
-            [ [ [ { (builtin ifThenElse) Bool } b ] True ] False ]
-          )
-        )
-      )
-    )
-    (termbind
-      (strict)
-      (vardecl lessThanEqInteger (fun (con integer) (fun (con integer) Bool)))
-      (lam
-        arg
-        (con integer)
-        (lam
-          arg
-          (con integer)
-          (let
-            (nonrec)
-            (termbind
-              (strict)
-              (vardecl b (con bool))
-              [ [ (builtin lessThanEqInteger) arg ] arg ]
-            )
-            [ [ [ { (builtin ifThenElse) Bool } b ] True ] False ]
-          )
-        )
-      )
-    )
-=======
-    (termbind
-      (strict)
-      (vardecl builtinBoolToBool (fun (con bool) Bool))
-      (lam b (con bool) [ [ [ { (builtin ifThenElse) Bool } b ] True ] False ])
-    )
-    (termbind
-      (strict)
-      (vardecl equalsInteger (fun (con integer) (fun (con integer) Bool)))
-      (lam
-        arg
-        (con integer)
-        (lam
-          arg
-          (con integer)
-          [ builtinBoolToBool [ [ (builtin eqInteger) arg ] arg ] ]
-        )
-      )
-    )
-    (termbind
-      (strict)
-      (vardecl lessThanEqInteger (fun (con integer) (fun (con integer) Bool)))
-      (lam
-        arg
-        (con integer)
-        (lam
-          arg
-          (con integer)
-          [ builtinBoolToBool [ [ (builtin lessThanEqInteger) arg ] arg ] ]
-        )
-      )
-    )
->>>>>>> ac6d6c898 (WIP)
     (datatypebind
       (datatype
         (tyvardecl Ordering (type))
@@ -100,7 +23,7 @@
     (termbind
       (strict)
       (vardecl
-        fOrdData_ccompare (fun (con integer) (fun (con integer) Ordering))
+        fOrdInteger_ccompare (fun (con integer) (fun (con integer) Ordering))
       )
       (lam
         x
@@ -271,7 +194,6 @@
         (lam
           y
           (con integer)
-<<<<<<< HEAD
           [
             [
               [
@@ -282,19 +204,6 @@
             ]
             False
           ]
-||||||| parent of ac6d6c898 (WIP)
-          (let
-            (nonrec)
-            (termbind
-              (strict)
-              (vardecl b (con bool))
-              [ [ (builtin greaterThanEqInteger) arg ] arg ]
-            )
-            [ [ [ { (builtin ifThenElse) Bool } b ] True ] False ]
-          )
-=======
-          [ builtinBoolToBool [ [ (builtin greaterThanEqInteger) arg ] arg ] ]
->>>>>>> ac6d6c898 (WIP)
         )
       )
     )
@@ -307,7 +216,6 @@
         (lam
           y
           (con integer)
-<<<<<<< HEAD
           [
             [
               [
@@ -340,19 +248,6 @@
             ]
             False
           ]
-||||||| parent of ac6d6c898 (WIP)
-          (let
-            (nonrec)
-            (termbind
-              (strict)
-              (vardecl b (con bool))
-              [ [ (builtin greaterThanInteger) arg ] arg ]
-            )
-            [ [ [ { (builtin ifThenElse) Bool } b ] True ] False ]
-          )
-=======
-          [ builtinBoolToBool [ [ (builtin greaterThanInteger) arg ] arg ] ]
->>>>>>> ac6d6c898 (WIP)
         )
       )
     )
@@ -365,7 +260,6 @@
         (lam
           y
           (con integer)
-<<<<<<< HEAD
           [
             [
               [
@@ -376,19 +270,6 @@
             ]
             False
           ]
-||||||| parent of ac6d6c898 (WIP)
-          (let
-            (nonrec)
-            (termbind
-              (strict)
-              (vardecl b (con bool))
-              [ [ (builtin lessThanInteger) arg ] arg ]
-            )
-            [ [ [ { (builtin ifThenElse) Bool } b ] True ] False ]
-          )
-=======
-          [ builtinBoolToBool [ [ (builtin lessThanInteger) arg ] arg ] ]
->>>>>>> ac6d6c898 (WIP)
         )
       )
     )
@@ -414,7 +295,7 @@
                 [
                   [
                     [ { CConsOrd (con integer) } equalsInteger ]
-                    fOrdData_ccompare
+                    fOrdInteger_ccompare
                   ]
                   lessThanInteger
                 ]

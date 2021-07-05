@@ -10,31 +10,31 @@ import           Common
 import           Control.DeepSeq
 import           Control.Exception
 import           Control.Monad.IO.Class
-import           Data.Ratio             ((%))
-import           GHC.Real               (reduce)
-import           Hedgehog               (MonadGen, Property)
+import           Data.Ratio                 ((%))
+import           GHC.Real                   (reduce)
+import           Hedgehog                   (MonadGen, Property)
 import qualified Hedgehog
-import qualified Hedgehog.Gen           as Gen
-import qualified Hedgehog.Range         as Range
+import qualified Hedgehog.Gen               as Gen
+import qualified Hedgehog.Range             as Range
 import           Lib
 import           PlcTestUtils
-import           PlutusCore.Data        (Data (..))
-import           Test.Tasty             (TestName)
-import           Test.Tasty.Hedgehog    (testProperty)
+import           PlutusCore.Data            (Data (..))
+import           Test.Tasty                 (TestName)
+import           Test.Tasty.Hedgehog        (testProperty)
 
-import qualified PlutusTx.Eq            as PlutusTx
-import qualified PlutusTx.Ord           as PlutusTx
-import qualified PlutusTx.Prelude       as PlutusTx
-import qualified PlutusTx.Ratio         as Ratio
+import qualified PlutusTx.Eq                as PlutusTx
+import qualified PlutusTx.Ord               as PlutusTx
+import qualified PlutusTx.Prelude           as PlutusTx
+import qualified PlutusTx.Ratio             as Ratio
 
+import           PlutusTx.Builtins.Internal (BuiltinData (..))
 import           PlutusTx.Code
-import           PlutusTx.Data
-import qualified PlutusTx.Lift          as Lift
+import qualified PlutusTx.Lift              as Lift
 import           PlutusTx.Plugin
 
 import           PlutusTx.Code
 
-import qualified PlutusCore.Data        as PLC
+import qualified PlutusCore.Data            as PLC
 
 import           Data.Proxy
 

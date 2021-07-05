@@ -358,7 +358,7 @@ instance uni ~ DefaultUni => ToBuiltinMeaning uni DefaultFun where
             mempty
     toBuiltinMeaning MkConsPairData =
         makeBuiltinMeaning
-            ((:) :: Data -> [Data] -> [Data])
+            ((:) :: (Data, Data) -> [(Data, Data)] -> [(Data, Data)])
             mempty
 
 -- See Note [Stable encoding of PLC]

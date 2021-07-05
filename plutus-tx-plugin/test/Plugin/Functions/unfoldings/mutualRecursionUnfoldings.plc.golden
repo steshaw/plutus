@@ -12,49 +12,6 @@
         (vardecl True Bool) (vardecl False Bool)
       )
     )
-<<<<<<< HEAD
-||||||| parent of ac6d6c898 (WIP)
-    (termbind
-      (strict)
-      (vardecl equalsInteger (fun (con integer) (fun (con integer) Bool)))
-      (lam
-        arg
-        (con integer)
-        (lam
-          arg
-          (con integer)
-          (let
-            (nonrec)
-            (termbind
-              (strict)
-              (vardecl b (con bool))
-              [ [ (builtin eqInteger) arg ] arg ]
-            )
-            [ [ [ { (builtin ifThenElse) Bool } b ] True ] False ]
-          )
-        )
-      )
-    )
-=======
-    (termbind
-      (strict)
-      (vardecl builtinBoolToBool (fun (con bool) Bool))
-      (lam b (con bool) [ [ [ { (builtin ifThenElse) Bool } b ] True ] False ])
-    )
-    (termbind
-      (strict)
-      (vardecl equalsInteger (fun (con integer) (fun (con integer) Bool)))
-      (lam
-        arg
-        (con integer)
-        (lam
-          arg
-          (con integer)
-          [ builtinBoolToBool [ [ (builtin eqInteger) arg ] arg ] ]
-        )
-      )
-    )
->>>>>>> ac6d6c898 (WIP)
     (let
       (rec)
       (termbind
