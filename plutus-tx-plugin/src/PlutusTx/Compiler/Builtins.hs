@@ -210,11 +210,29 @@ builtinNames = [
     , ''Builtins.BuiltinPair
     , 'Builtins.fst
     , 'Builtins.snd
+    , 'Builtins.mkPairData
 
     , ''Builtins.BuiltinList
     , 'Builtins.null
     , 'Builtins.head
     , 'Builtins.tail
+    , 'Builtins.mkNilData
+    , 'Builtins.mkConsData
+    , 'Builtins.mkNilPairData
+    , 'Builtins.mkConsPairData
+
+    , ''Builtins.BuiltinData
+    , 'Builtins.chooseData
+    , 'Builtins.mkConstr
+    , 'Builtins.mkMap
+    , 'Builtins.mkList
+    , 'Builtins.mkI
+    , 'Builtins.mkB
+    , 'Builtins.unsafeDataAsConstr
+    , 'Builtins.unsafeDataAsMap
+    , 'Builtins.unsafeDataAsList
+    , 'Builtins.unsafeDataAsB
+    , 'Builtins.unsafeDataAsI
     ]
 
 -- | Get the 'GHC.TyThing' for a given 'TH.Name' which was stored in the builtin name info,
@@ -302,11 +320,16 @@ defineBuiltinTerms = do
     -- Pairs
     defineBuiltinTerm 'Builtins.fst $ mkBuiltin PLC.FstPair
     defineBuiltinTerm 'Builtins.snd $ mkBuiltin PLC.SndPair
+    defineBuiltinTerm 'Builtins.mkPairData $ mkBuiltin PLC.MkPairData
 
     -- List
     defineBuiltinTerm 'Builtins.null $ mkBuiltin PLC.NullList
     defineBuiltinTerm 'Builtins.head $ mkBuiltin PLC.HeadList
     defineBuiltinTerm 'Builtins.tail $ mkBuiltin PLC.TailList
+    defineBuiltinTerm 'Builtins.mkNilData $ mkBuiltin PLC.MkNilData
+    defineBuiltinTerm 'Builtins.mkConsData $ mkBuiltin PLC.MkConsData
+    defineBuiltinTerm 'Builtins.mkNilPairData $ mkBuiltin PLC.MkNilPairData
+    defineBuiltinTerm 'Builtins.mkConsPairData $ mkBuiltin PLC.MkConsPairData
 
     -- Data
     defineBuiltinTerm 'Builtins.chooseData $ mkBuiltin PLC.ChooseData
