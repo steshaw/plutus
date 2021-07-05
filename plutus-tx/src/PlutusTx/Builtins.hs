@@ -1,21 +1,5 @@
-<<<<<<< HEAD
 {-# OPTIONS_GHC -fno-omit-interface-pragmas #-}
-||||||| parent of ac6d6c898 (WIP)
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE PolyKinds #-}
--- This ensures that we don't put *anything* about these functions into the interface
--- file, otherwise GHC can be clever about the ones that are always error, even though
--- they're NOINLINE!
-{-# OPTIONS_GHC -O0 #-}
-=======
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE PolyKinds #-}
--- This ensures that we don't put *anything* about these functions into the interface
--- file, otherwise GHC can be clever about the ones that are always error, even though
--- they're NOINLINE!
-{-# OPTIONS_GHC -O0 #-}
 
->>>>>>> ac6d6c898 (WIP)
 -- | Primitive names and functions for working with Plutus Core builtins.
 module PlutusTx.Builtins (
                                 -- * Bytestring builtins
@@ -74,21 +58,11 @@ module PlutusTx.Builtins (
 import           Data.ByteString            as BS
 import           Prelude                    hiding (String, error)
 
-<<<<<<< HEAD
 import           PlutusCore.Data
 
 import           PlutusTx.Builtins.Class
 import           PlutusTx.Builtins.Internal (BuiltinString)
 import qualified PlutusTx.Builtins.Internal as BI
-||||||| parent of ac6d6c898 (WIP)
-import           PlutusCore.Data
-
-import           PlutusTx.Utils       (mustBeReplaced)
-=======
-import           PlutusTx.Data
-import           PlutusTx.Error
-import           PlutusTx.Utils       (mustBeReplaced)
->>>>>>> ac6d6c898 (WIP)
 
 {-# INLINABLE concatenate #-}
 -- | Concatenates two 'ByteString's.

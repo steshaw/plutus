@@ -12,19 +12,20 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 module PlutusTx.Lift.Instances () where
 
-import qualified PlutusCore          as PLC
+import qualified PlutusCore                 as PLC
+import qualified PlutusCore.Data            as PLC
 
-import           PlutusTx.Data
+import           PlutusTx.Builtins.Internal
 import           PlutusTx.Lift.Class
 
 import           PlutusIR
 import           PlutusIR.MkPir
 
-import qualified Data.ByteString     as BS
-import qualified Data.Kind           as GHC
+import qualified Data.ByteString            as BS
+import qualified Data.Kind                  as GHC
 import           Data.Proxy
 
-import           GHC.TypeLits        (ErrorMessage (..), TypeError)
+import           GHC.TypeLits               (ErrorMessage (..), TypeError)
 
 -- Derived instances
 
@@ -90,6 +91,13 @@ instance uni `PLC.Includes` Char => Typeable uni Char where
 
 instance uni `PLC.Includes` Char => Lift uni Char where
     lift = liftBuiltin
+
+instance uni `PLC.Includes` PLC.Data => Typeable uni BuiltinData where
+    typeRep _ = typeRepBuiltin (Proxy @PLC.Data)
+
+instance uni `PLC.Includes` PLC.Data => Lift uni BuiltinData where
+    lift b = liftBuiltin $ unsafeGetData b
+
 
 -- Standard types
 -- These need to be in a separate file for TH staging reasons

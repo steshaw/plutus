@@ -1,4 +1,5 @@
-{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE TypeApplications   #-}
 -- This ensures that we don't put *anything* about these functions into the interface
 -- file, otherwise GHC can be clever about the ones that are always error, even though
 -- they're NOINLINE!
@@ -14,6 +15,7 @@ import           Data.ByteString      as BS
 import qualified Data.ByteString.Hash as Hash
 import           Data.Coerce
 import           Data.Maybe           (fromMaybe)
+import qualified PlutusCore.Data      as PLC
 import           PlutusTx.Utils
 
 {- Note [Builtin name definitions]
@@ -229,6 +231,10 @@ fst (BuiltinPair (a, _)) = a
 snd :: BuiltinPair a b -> b
 snd (BuiltinPair (_, b)) = b
 
+{-# NOINLINE mkPairData #-}
+mkPairData :: BuiltinData -> BuiltinData -> BuiltinPair BuiltinData BuiltinData
+mkPairData d1 d2 = BuiltinPair (d1, d2)
+
 {-
 LIST
 -}
@@ -250,63 +256,83 @@ tail :: BuiltinList a -> BuiltinList a
 tail (BuiltinList (_:xs)) = coerce xs
 tail (BuiltinList [])     = Prelude.error "empty list"
 
-newtype BuiltinData = BuiltinData { unsafeGetData :: TrueData.Data }
-    deriving newtype (Haskell.Show, Haskell.Eq, Haskell.Ord)
+{-# NOINLINE mkNilData #-}
+mkNilData :: BuiltinList BuiltinData
+mkNilData = BuiltinList []
+
+{-# NOINLINE mkConsData #-}
+mkConsData :: BuiltinData -> BuiltinList BuiltinData -> BuiltinList BuiltinData
+mkConsData d (BuiltinList ds) = BuiltinList (d:ds)
+
+{-# NOINLINE mkNilPairData #-}
+mkNilPairData :: BuiltinList (BuiltinPair BuiltinData BuiltinData)
+mkNilPairData = BuiltinList []
+
+{-# NOINLINE mkConsPairData #-}
+mkConsPairData :: BuiltinPair BuiltinData BuiltinData -> BuiltinList (BuiltinPair BuiltinData BuiltinData) -> BuiltinList (BuiltinPair BuiltinData BuiltinData)
+mkConsPairData d (BuiltinList ds) = BuiltinList (d:ds)
+
+{-
+DATA
+-}
+
+newtype BuiltinData = BuiltinData { unsafeGetData :: PLC.Data }
+    deriving newtype (Show, Eq, Ord)
 
 {-# NOINLINE chooseData #-}
-chooseData :: forall a . a -> a -> a -> a -> a -> Data -> a
+chooseData :: forall a . a -> a -> a -> a -> a -> BuiltinData -> a
 chooseData constrCase mapCase listCase iCase bCase (BuiltinData d) = case d of
-    TrueData.Constr{} -> constrCase
-    TrueData.Map{}    -> mapCase
-    TrueData.List{}   -> listCase
-    TrueData.I{}      -> iCase
-    TrueData.B{}      -> bCase
+    PLC.Constr{} -> constrCase
+    PLC.Map{}    -> mapCase
+    PLC.List{}   -> listCase
+    PLC.I{}      -> iCase
+    PLC.B{}      -> bCase
 
 {-# NOINLINE mkConstr #-}
-mkConstr :: Haskell.Integer -> [Data] -> Data
-mkConstr i args = BuiltinData (TrueData.Constr i (coerce args))
+mkConstr :: BuiltinInteger -> BuiltinList BuiltinData -> BuiltinData
+mkConstr i args = BuiltinData (PLC.Constr i (coerce args))
 
 {-# NOINLINE mkMap #-}
-mkMap :: [(Data, Data)] -> Data
-mkMap es = BuiltinData (TrueData.Map (coerce es))
+mkMap :: BuiltinList (BuiltinPair BuiltinData BuiltinData) -> BuiltinData
+mkMap es = BuiltinData (PLC.Map (coerce es))
 
 {-# NOINLINE mkList #-}
-mkList :: [Data] -> Data
-mkList l = BuiltinData (TrueData.List (coerce l))
+mkList :: BuiltinList BuiltinData -> BuiltinData
+mkList l = BuiltinData (PLC.List (coerce l))
 
 {-# NOINLINE mkI #-}
-mkI :: Haskell.Integer -> Data
-mkI i = BuiltinData (TrueData.I i)
+mkI :: BuiltinInteger -> BuiltinData
+mkI i = BuiltinData (PLC.I i)
 
 {-# NOINLINE mkB #-}
-mkB :: BS.ByteString -> Data
-mkB b = BuiltinData (TrueData.B b)
+mkB :: BuiltinByteString -> BuiltinData
+mkB b = BuiltinData (PLC.B b)
 
 {-# NOINLINE unsafeDataAsConstr #-}
-unsafeDataAsConstr :: BuiltinData -> BuiltinPair Haskell.Integer (BuiltinList BuiltinData)
-unsafeDataAsConstr (BuiltinData (TrueData.Constr i args)) = BuiltinPair (i, coerce args)
-unsafeDataAsConstr _                                      = error unitval
+unsafeDataAsConstr :: BuiltinData -> BuiltinPair BuiltinInteger (BuiltinList BuiltinData)
+unsafeDataAsConstr (BuiltinData (PLC.Constr i args)) = BuiltinPair (i, coerce args)
+unsafeDataAsConstr _                                 = Prelude.error "not a Constr"
 
 {-# NOINLINE unsafeDataAsMap #-}
-unsafeDataAsMap :: Data -> [(Data, Data)]
-unsafeDataAsMap (BuiltinData (TrueData.Map m)) = coerce m
-unsafeDataAsMap _                              = error unitval
+unsafeDataAsMap :: BuiltinData -> BuiltinList (BuiltinPair BuiltinData BuiltinData)
+unsafeDataAsMap (BuiltinData (PLC.Map m)) = coerce m
+unsafeDataAsMap _                         = Prelude.error "not a Map"
 
 {-# NOINLINE unsafeDataAsList #-}
-unsafeDataAsList :: Data -> [Data]
-unsafeDataAsList (BuiltinData (TrueData.List l)) = coerce l
-unsafeDataAsList _                               = error unitval
+unsafeDataAsList :: BuiltinData -> BuiltinList BuiltinData
+unsafeDataAsList (BuiltinData (PLC.List l)) = coerce l
+unsafeDataAsList _                          = Prelude.error "not a List"
 
 {-# NOINLINE unsafeDataAsI #-}
-unsafeDataAsI :: Data -> Haskell.Integer
-unsafeDataAsI (BuiltinData (TrueData.I i)) = i
-unsafeDataAsI _                            = error unitval
+unsafeDataAsI :: BuiltinData -> BuiltinInteger
+unsafeDataAsI (BuiltinData (PLC.I i)) = i
+unsafeDataAsI _                       = Prelude.error "not an I"
 
 {-# NOINLINE unsafeDataAsB #-}
-unsafeDataAsB :: Data -> BS.ByteString
-unsafeDataAsB (BuiltinData (TrueData.B b)) = b
-unsafeDataAsB _                            = error unitval
+unsafeDataAsB :: BuiltinData -> BuiltinByteString
+unsafeDataAsB (BuiltinData (PLC.B b)) = b
+unsafeDataAsB _                       = Prelude.error "not a B"
 
 {-# NOINLINE equalsData #-}
-equalsData :: Data -> Data -> Bool
-equalsData (BuiltinData b1) (BuiltinData b2) = b1 Prelude.== b2
+equalsData :: BuiltinData -> BuiltinData -> BuiltinBool
+equalsData (BuiltinData b1) (BuiltinData b2) = coerce $ b1 Prelude.== b2

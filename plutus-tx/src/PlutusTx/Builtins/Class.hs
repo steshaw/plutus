@@ -154,3 +154,11 @@ type instance BuiltinRep [a] = BuiltinList (BuiltinRep a)
 instance FromBuiltin a => FromBuiltin [a] where
     {-# INLINABLE fromBuiltin #-}
     fromBuiltin l = ifThenElse (null l) [] (fromBuiltin (head l):fromBuiltin (tail l))
+
+type instance BuiltinRep BuiltinData = BuiltinData
+instance FromBuiltin BuiltinData where
+    {-# INLINABLE fromBuiltin #-}
+    fromBuiltin = id
+instance ToBuiltin BuiltinData where
+    {-# INLINABLE toBuiltin #-}
+    toBuiltin = id
